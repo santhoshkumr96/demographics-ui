@@ -1,0 +1,14 @@
+{
+    "login" : {
+        "english" : "Login",
+        "tamil" : "உள்நுழை"
+    },
+    "username" : {
+        "english" : "Username",
+        "tamil" : "பயனர் பெயர்"
+    },
+    "password" : {
+        "english" : "Password",
+        "tamil" : "கடவுச்சொல்"
+    }
+}
