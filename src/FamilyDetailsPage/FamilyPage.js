@@ -112,7 +112,6 @@ const FamilyPage = ({ }) => {
         const temp = { ...famData };
         temp[key] = value;
         setFamData(temp);
-        // console.log(temp);
     }
 
     const onChangeAutoCompleteArea = (value, key) => {
@@ -123,6 +122,8 @@ const FamilyPage = ({ }) => {
         const areaCodeData = filterAreaFunction('areaCode', panchayatData)
         const villageNameData = filterAreaFunction('villageName', areaCodeData)
         const streetData = filterAreaFunction('streetName', villageNameData)
+
+        // console.log(streetData,areaFilter);
 
         genAreaLables(streetData);
 
@@ -144,7 +145,7 @@ const FamilyPage = ({ }) => {
             }
         } else { 
             temp = [...data]
-        }
+        }   
         // setFamilyArea(areaFilter)
         return temp;
     }
@@ -154,6 +155,33 @@ const FamilyPage = ({ }) => {
         getAreaDetails();
         getFamily(100);
     }, [])
+
+    useEffect(()=>{
+        if(areaLabel.panchayat !== undefined){
+            const temp = {...familyArea};
+            if(areaLabel.panchayat.length === 1){
+                temp.panchayat = areaLabel.panchayat[0];
+            } else {
+                temp.panchayat = undefined;
+            }
+            if(areaLabel.areaCode.length === 1){
+                temp.areaCode = areaLabel.areaCode[0];
+            } else {
+                temp.areaCode = undefined;
+            }
+            if(areaLabel.villageName.length === 1){
+                temp.villageName = areaLabel.villageName[0];
+            } else {
+                temp.villageName = undefined;
+            }
+            if(areaLabel.streetName.length === 1){
+                temp.streetName = areaLabel.streetName[0];
+            } else {
+                temp.streetName = undefined;
+            }
+            setFamilyArea(temp);
+        }
+    },[JSON.stringify(areaLabel)])
 
     return (
         <Fragment>
