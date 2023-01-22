@@ -19,6 +19,7 @@ const FamilyPage = ({ }) => {
     const [areaLabel, setAreaLabel] = useState({});
     const [areaFilter, setAreaFilter] = useState(defaultAreaFilter);
     // const [areaFilteredData, setAreaFilteredData] = useState([]);
+    const [inputValue, setInputValue] = useState('');
 
     //default page handlers
     const [isError, setisError] = useState(false);
@@ -122,21 +123,15 @@ const FamilyPage = ({ }) => {
         const areaCodeData = filterAreaFunction('areaCode', panchayatData)
         const villageNameData = filterAreaFunction('villageName', areaCodeData)
         const streetData = filterAreaFunction('streetName', villageNameData)
-        
 
-        // if(areaFilter.panchayat !== ''){
-        //     for (let i = 0; i < areaData.length; i++) {
-        //         if(areaData[i].panchayat === areaFilter.panchayat){
-        //             temp.push(areaData[i]);
-        //         }
-        //     }
-        // } else { 
-        //     temp = [...areaData]
-        // }
-
-        console.log(streetData);
         genAreaLables(streetData);
-        // console.log(areaFilter);
+
+        if(streetData.length === 1){
+            setFamilyArea(streetData[0])
+            const temp = {...famData}
+            temp.areaDetails = streetData[0].id;
+            setFamData(temp);
+        } 
     }
 
     const filterAreaFunction = (key, data) => {
@@ -150,6 +145,7 @@ const FamilyPage = ({ }) => {
         } else { 
             temp = [...data]
         }
+        // setFamilyArea(areaFilter)
         return temp;
     }
 
@@ -182,7 +178,7 @@ const FamilyPage = ({ }) => {
                         id="standard-basic" label="Mobile No" variant="standard" />
                 </Grid>
             </Grid>
-            <Grid container spacing={2}>
+            {/* <Grid container spacing={2}>
                 <Grid item xs={3}>
                     <TextField value={familyArea.panchayat + ''} id="standard-basic" label="Panchayat" variant="standard" />
                 </Grid>
@@ -195,69 +191,74 @@ const FamilyPage = ({ }) => {
                 <Grid item xs={3}>
                     <TextField value={familyArea.streetName + ''} id="standard-basic" label="Street Name" variant="standard" />
                 </Grid>
-            </Grid>
+            </Grid> */}
 
 
             <Grid container spacing={2} style={{ marginTop: 20 }}>
                 <Grid item xs={3}>
                     <Autocomplete
-                        disablePortal
                         id="combo-box-demo"
                         options={areaLabel.panchayat}
                         onChange={(event, newValue) => {
                             onChangeAutoCompleteArea(newValue, 'panchayat')
                         }}
-                        value={familyArea.panchayat}
-                        // defaultValue={familyArea.panchayat+''}
-                        // inputValue={familyArea.panchayat + ''}
-                        renderInput={(params) => <TextField {...params} label="Panchayat" />}
+                        value={familyArea.panchayat===undefined?null:(familyArea.panchayat+'')}
+                        renderInput={(params) => <TextField {...params} variant="standard" label="Panchayat" />}
                     />
                 </Grid>
                 <Grid item xs={3}>
-                    <Autocomplete
-                        disablePortal
+                    <Autocomplete 
                         id="combo-box-demo"
                         options={areaLabel.areaCode}
                         onChange={(event, newValue) => {
                             onChangeAutoCompleteArea(newValue, 'areaCode')
                         }}
-                        // inputValue={familyArea.areaCode + ''}
-                        renderInput={(params) => <TextField {...params} label="Area Code" />}
+                        value={familyArea.areaCode===undefined?null:(familyArea.areaCode+'')}
+                        renderInput={(params) => <TextField {...params} variant="standard" label="Area Code" />}
                     />
                 </Grid>
                 <Grid item xs={3}>
                     <Autocomplete
-                        disablePortal
                         id="combo-box-demo"
                         options={areaLabel.villageName}
                         onChange={(event, newValue) => {
                             onChangeAutoCompleteArea(newValue, 'villageName')
 
                         }}
-                        // inputValue={familyArea.villageName + ''}
-                        renderInput={(params) => <TextField {...params} label="Village Name" />}
+                        value={familyArea.villageName===undefined?null:(familyArea.villageName+'')}
+                        renderInput={(params) => <TextField {...params} variant="standard" label="Village Name" />}
                     />
                 </Grid>
                 <Grid item xs={3}>
                     <Autocomplete
-                        disablePortal
                         id="combo-box-demo"
                         options={areaLabel.streetName}
                         onChange={(event, newValue) => {
                             onChangeAutoCompleteArea(newValue, 'streetName')
                         }}
-                        // inputValue={familyArea.streetName + ''}
-                        renderInput={(params) => <TextField {...params} label="Street Name" />}
+                        value={familyArea.streetName===undefined?null:(familyArea.streetName+'')}
+                        renderInput={(params) => <TextField {...params} variant="standard" label="Street Name" />}
                     />
                 </Grid>
             </Grid>
 
+            {/* <Button
+                style={{marginTop : 20}}
+                variant="contained"
+                onClick={() => resetArea()}
+            >
+                Reset
+            </Button> */}
+
             <Button
+                style={{marginTop : 20, marginLeft: 20}}
                 variant="contained"
                 onClick={() => saveFamDetails()}
             >
                 Save
             </Button>
+
+
 
             {/* <Typography>
                 {JSON.stringify(famData)}
