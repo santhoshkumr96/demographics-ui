@@ -1,5 +1,5 @@
 import { Container, Button, Snackbar, Alert, Backdrop, CircularProgress, TablePagination, TextField, Badge } from '@mui/material';
-import { useEffect, useContext } from 'react';
+import { useEffect, useContext, Fragment } from 'react';
 import { useState } from 'react';
 import ajax from '../ajaxHelper';
 import { SERVICE_BASE_URL } from '../config';
@@ -21,6 +21,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import LoginContext from '../LoginAuthProvider/LoginContext';
+import FamilyDetails from '../FamilyDetailsPage/FamilyDetails';
 
 const style = {
     position: 'absolute',
@@ -79,6 +80,8 @@ const HomePage = () => {
     const [mobileNumber, setMobileNumber] = useState('');
     const [villageName, setVillageName] = useState('');
     const [filterDataLoading, setFilterDataLoading] = useState(false);
+    const [famId, setFamId] = useState(0);
+    const [isViewFam, setIsViewFam] = useState(false);
 
     const [openModal, setOpenModal] = useState(false);
     const handleOpenModal = () => setOpenModal(true);
@@ -127,7 +130,7 @@ const HomePage = () => {
         ajax
             .post(`${SERVICE_BASE_URL}/getFamilyDetails`, temp, { config })
             .then((res) => {
-                console.log(res)
+                // console.log(res)
                 setData(res.data.content)
                 setPopDataCount(res.data.totalElements)
                 setIsLoading(false);
@@ -144,10 +147,10 @@ const HomePage = () => {
     }
 
 
-    const deleteFamilyCall = (familyId,id,userId) => {
+    const deleteFamilyCall = (familyId, id, userId) => {
         const config = {};
         ajax
-            .post(`${SERVICE_BASE_URL}/deleteFamily`, {familyId,id,userId}, { config })
+            .post(`${SERVICE_BASE_URL}/deleteFamily`, { familyId, id, userId }, { config })
             .then((res) => {
                 getFamilyDetails();
             })
@@ -176,157 +179,191 @@ const HomePage = () => {
         setFilterDataLoading(true)
         getFamilyDetails();
         console.log('calling here')
-    }, [paginationData,familyId, respondentName, mobileNumber, villageName])
+    }, [paginationData, familyId, respondentName, mobileNumber, villageName])
 
 
-    const deleteFamily = (familyid,id) => {
+    const deleteFamily = (familyid, id) => {
         setDeleteFamilyId(familyid)
         setDeleteId(id)
         handleOpenModal();
     }
 
     const editFamily = (id) => {
-        console.log('edit')
+        setFamId(id);
+        setIsViewFam(true);
+    }
+
+    const addFamily = () => {
+        setFamId(0);
+        setIsViewFam(true);
     }
 
     const confirmDeleteFamily = () => {
         setFilterDataLoading(true);
         handleCloseModal();
-        deleteFamilyCall(deleteFamilyId,deleteId,loginContext.userId);
+        deleteFamilyCall(deleteFamilyId, deleteId, loginContext.userId);
     }
 
     return (
-        <Grid style={{ margin: 10, marginTop:50 }} container rowSpacing={3} spacing={2}>
-            <Stack>
-                <Stack direction="row" spacing={2}>
-                    <TextField id="outlined-basic" size="small" label="Family Id" variant="outlined"
-                        value={familyId}
-                        onChange={(e) => setFamilyId(e.target.value)}
-                    />
-                    <TextField id="outlined-basic" size="small" label="Respondent Name" variant="outlined"
-                        value={respondentName}
-                        onChange={(e) => setRespondentName(e.target.value)}
-                    />
-                    <TextField id="outlined-basic" size="small" label="Mobile Number" variant="outlined"
-                        value={mobileNumber}
-                        onChange={(e) => setMobileNumber(e.target.value)}
-                    />
-                    <TextField id="outlined-basic" size="small" label="Village Name" variant="outlined"
-                        value={villageName}
-                        onChange={(e) => setVillageName(e.target.value)}
-                    />
-                    <Button
-                        variant="contained"
-                        onClick={() => clearSearch()}
-                    >
-                        Clear
-                    </Button>
-                </Stack>
+        <Fragment>
 
-                <TablePagination
-                    className="pagnation-div"
-                    rowsPerPageOptions={[10, 25, 100, 1000]}
-                    component="div"
-                    count={popDataCount}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                />
-                <TableContainer component={Paper}>
-                    <Table  aria-label="simple table">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell >S.No</TableCell>
-                                <TableCell >Id</TableCell>
-                                <TableCell >Family Id</TableCell>
-                                <TableCell >Respondent Name</TableCell>
-                                <TableCell >Mobile Number</TableCell>
-                                <TableCell >Number Of Family Members</TableCell>
-                                <TableCell >Village Name</TableCell>
-                                <TableCell >Status</TableCell>
-                                <TableCell >Action</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {!filterDataLoading && data.map((row, index) => (
-                                <TableRow
-                                    key={row.name}
-                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                >
-                                    <TableCell>{(page * rowsPerPage) + index + 1} </TableCell>
-                                    <TableCell>{row.id} </TableCell>
-                                    <TableCell>{row.familyId} </TableCell>
-                                    <TableCell>{row.respondentName}</TableCell>
-                                    <TableCell>{row.mobileNumber}</TableCell>
-                                    <TableCell>{Object.keys(row.memberDetail).length}</TableCell>
-                                    <TableCell>{row.demographicDetail.villageName}</TableCell>
-                                    <TableCell>{'in progress'}</TableCell>
-                                    <TableCell>
-                                        <Badge onClick={() => editFamily(row.id)} color="primary">
-                                            <EditIcon color="action" />
-                                        </Badge>
-                                        <Badge onClick={() => deleteFamily(row.familyId,row.id)} style={{ marginLeft: 20 }} color="primary">
-                                            <DeleteIcon color="action" />
-                                        </Badge>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
+            {
+                !isViewFam &&
 
-                        </TableBody>
-                    </Table>
-                    {
-                        filterDataLoading &&
-                        <Container sx={{ width: 300 }}>
-                            <Skeleton />
-                            <Skeleton animation="wave" />
-                            <Skeleton animation={false} />
-                        </Container>
-                    }
-                </TableContainer>
-            </Stack>
-
-            <Snackbar open={isError} autoHideDuration={4000} onClose={handleClose}>
-                <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
-                    {errorMessage === '' ? 'Please Contact Admin' : errorMessage}
-                </Alert>
-            </Snackbar>
-            <Backdrop
-                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-                open={isLoading}
-            // onClick={handleClose}
-            >
-                <CircularProgress color="inherit" />
-            </Backdrop>
-            <Modal
-                open={openModal}
-                onClose={handleCloseModal}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-            >
-                <Box sx={style}>
-                    <Typography id="modal-modal-title" variant="h6" component="h2">
-                        Are you sure you want to delete {deleteFamilyId}
-                    </Typography>
-                    <Container >
-                        <Stack direction="row" spacing={2} style={{marginTop: 20}}>
+                <Grid style={{ margin: 10, marginTop: 50 }} container rowSpacing={3} spacing={2}>
+                    <Stack>
+                        <Stack direction="row" spacing={2}>
+                            <TextField id="outlined-basic" size="small" label="Family Id" variant="outlined"
+                                value={familyId}
+                                onChange={(e) => setFamilyId(e.target.value)}
+                            />
+                            <TextField id="outlined-basic" size="small" label="Respondent Name" variant="outlined"
+                                value={respondentName}
+                                onChange={(e) => setRespondentName(e.target.value)}
+                            />
+                            <TextField id="outlined-basic" size="small" label="Mobile Number" variant="outlined"
+                                value={mobileNumber}
+                                onChange={(e) => setMobileNumber(e.target.value)}
+                            />
+                            <TextField id="outlined-basic" size="small" label="Village Name" variant="outlined"
+                                value={villageName}
+                                onChange={(e) => setVillageName(e.target.value)}
+                            />
                             <Button
                                 variant="contained"
-                                onClick={() => confirmDeleteFamily()}
+                                onClick={() => clearSearch()}
                             >
-                                confirm
-                            </Button>
-                            <Button
-                                variant="outlined"
-                                onClick={() => handleCloseModal()}
-                            >
-                                cancel
+                                Clear
                             </Button>
                         </Stack>
-                    </Container>
-                </Box>
-            </Modal>
-        </Grid>
+
+                        <Stack direction="row" spacing={2}>
+
+                            <TablePagination
+                                className="pagnation-div"
+                                rowsPerPageOptions={[10, 25, 100, 1000]}
+                                component="div"
+                                count={popDataCount}
+                                rowsPerPage={rowsPerPage}
+                                page={page}
+                                onPageChange={handleChangePage}
+                                onRowsPerPageChange={handleChangeRowsPerPage}
+                            />
+                            <Button
+                                variant="contained"
+                                onClick={() => addFamily()}
+                            >
+                                Add
+                            </Button>
+                        </Stack>
+                        <TableContainer component={Paper}>
+                            <Table aria-label="simple table">
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell >S.No</TableCell>
+                                        <TableCell >Id</TableCell>
+                                        <TableCell >Family Id</TableCell>
+                                        <TableCell >Respondent Name</TableCell>
+                                        <TableCell >Mobile Number</TableCell>
+                                        <TableCell >Number Of Family Members</TableCell>
+                                        <TableCell >Village Name</TableCell>
+                                        <TableCell >Status</TableCell>
+                                        <TableCell >Action</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {!filterDataLoading && data.map((row, index) => (
+                                        <TableRow
+                                            key={row.name}
+                                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                        >
+                                            <TableCell>{(page * rowsPerPage) + index + 1} </TableCell>
+                                            <TableCell>{row.id} </TableCell>
+                                            <TableCell>{row.familyId} </TableCell>
+                                            <TableCell>{row.respondentName}</TableCell>
+                                            <TableCell>{row.mobileNumber}</TableCell>
+                                            <TableCell>{Object.keys(row.memberDetail).length}</TableCell>
+                                            <TableCell>{row.demographicDetail.villageName}</TableCell>
+                                            <TableCell>{'in progress'}</TableCell>
+                                            <TableCell>
+                                                <Badge onClick={() => editFamily(row.id)} color="primary">
+                                                    <EditIcon color="action" />
+                                                </Badge>
+                                                <Badge onClick={() => deleteFamily(row.familyId, row.id)} style={{ marginLeft: 20 }} color="primary">
+                                                    <DeleteIcon color="action" />
+                                                </Badge>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+
+                                </TableBody>
+                            </Table>
+                            {
+                                filterDataLoading &&
+                                <Container sx={{ width: 300 }}>
+                                    <Skeleton />
+                                    <Skeleton animation="wave" />
+                                    <Skeleton animation={false} />
+                                </Container>
+                            }
+                        </TableContainer>
+                    </Stack>
+
+                    <Snackbar open={isError} autoHideDuration={4000} onClose={handleClose}>
+                        <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+                            {errorMessage === '' ? 'Please Contact Admin' : errorMessage}
+                        </Alert>
+                    </Snackbar>
+                    <Backdrop
+                        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                        open={isLoading}
+                    // onClick={handleClose}
+                    >
+                        <CircularProgress color="inherit" />
+                    </Backdrop>
+                    <Modal
+                        open={openModal}
+                        onClose={handleCloseModal}
+                        aria-labelledby="modal-modal-title"
+                        aria-describedby="modal-modal-description"
+                    >
+                        <Box sx={style}>
+                            <Typography id="modal-modal-title" variant="h6" component="h2">
+                                Are you sure you want to delete {deleteFamilyId}
+                            </Typography>
+                            <Container >
+                                <Stack direction="row" spacing={2} style={{ marginTop: 20 }}>
+                                    <Button
+                                        variant="contained"
+                                        onClick={() => confirmDeleteFamily()}
+                                    >
+                                        confirm
+                                    </Button>
+                                    <Button
+                                        variant="outlined"
+                                        onClick={() => handleCloseModal()}
+                                    >
+                                        cancel
+                                    </Button>
+                                </Stack>
+                            </Container>
+                        </Box>
+                    </Modal>
+                </Grid>
+
+            }
+            {
+                isViewFam &&
+                <Fragment>
+                    <Button style={{ margin: 10, marginTop: 50 }} onClick={() => { setIsViewFam(false) }}>
+                        click back
+                    </Button>
+                    <FamilyDetails famId={famId} />
+                </Fragment>
+
+            }
+
+        </Fragment>
     );
 }
 

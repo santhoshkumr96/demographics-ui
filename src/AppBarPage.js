@@ -41,9 +41,8 @@ const AppBarPage = () => {
                 </div>
             </header>
 
-            <FamilyDetails />
-            {/* <HomePage /> */}
-
+            <HomePage /> 
+            {/* <FamilyDetails /> */}
         </Fragment>
     );
 }

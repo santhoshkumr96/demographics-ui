@@ -3,6 +3,8 @@ import { Grid, Typography, Snackbar, Alert, Backdrop, CircularProgress, TextFiel
 import { Fragment, useState, useEffect } from 'react';
 import ajax from '../ajaxHelper';
 import { SERVICE_BASE_URL } from '../config';
+import LoginContext from '../LoginAuthProvider/LoginContext';
+import { useContext } from 'react';
 
 const defaultAreaFilter = {
     panchayat: '',
@@ -11,9 +13,19 @@ const defaultAreaFilter = {
     streetName: ''
 }
 
-const FamilyPage = ({ }) => {
+const defaultFamilyDetails = {
+    "familyId": "",
+    "areaDetails": 0,
+    "doorNo": "",
+    "respondentName": "",
+    "mobileNumber": "",
+    "createdBy":""
+}
 
-    const [famData, setFamData] = useState('')
+const FamilyPage = ({famId}) => {
+
+    const loginContext = useContext(LoginContext);
+    const [famData, setFamData] = useState(defaultFamilyDetails)
     const [areaData, setAreaData] = useState([])
     const [familyArea, setFamilyArea] = useState({});
     const [areaLabel, setAreaLabel] = useState({});
@@ -51,10 +63,13 @@ const FamilyPage = ({ }) => {
     const saveFamDetails = () => {
         const config = {};
         setIsLoading(true);
+        if(famId === 0){
+            famData.createdBy = loginContext.userId
+        }
         ajax
             .post(`${SERVICE_BASE_URL}/saveFamily`, famData, { config })
             .then((res) => {
-                getFamily(100);
+                getFamily(famId);
             })
             .catch((e) => {
                 setIsLoading(false);
@@ -153,7 +168,9 @@ const FamilyPage = ({ }) => {
     useEffect(() => {
         setIsLoading(true);
         getAreaDetails();
-        getFamily(100);
+        if(famId !== 0){
+            getFamily(famId);
+        }
     }, [])
 
     useEffect(()=>{
@@ -184,8 +201,9 @@ const FamilyPage = ({ }) => {
     },[JSON.stringify(areaLabel)])
 
     return (
-        <Fragment>
-            <Grid container spacing={2}>
+        <Fragment >
+            
+            <Grid style={{padding:20}} container spacing={2}>
                 <Grid item xs={3}>
                     <TextField value={famData.respondentName + ''}
                         onChange={(e) => changeFamilyDetails(e.target.value, 'respondentName')}
@@ -222,7 +240,7 @@ const FamilyPage = ({ }) => {
             </Grid> */}
 
 
-            <Grid container spacing={2} style={{ marginTop: 20 }}>
+            <Grid container spacing={2} style={{  padding: 30}}>
                 <Grid item xs={3}>
                     <Autocomplete
                         id="combo-box-demo"
