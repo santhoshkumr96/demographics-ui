@@ -285,7 +285,7 @@ const HomePage = () => {
                                             <TableCell>{Object.keys(row.memberDetail).length}</TableCell>
                                             <TableCell>{row.demographicDetail.villageName}</TableCell>
                                             <TableCell>{'in progress'}</TableCell>
-                                            <TableCell>
+                                            <TableCell style={{minWidth: 100}}>
                                                 <Badge onClick={() => editFamily(row.id)} color="primary">
                                                     <EditIcon color="action" />
                                                 </Badge>
@@ -356,7 +356,7 @@ const HomePage = () => {
                 isViewFam &&
                 <Fragment>
                     <Button style={{ margin: 10, marginTop: 50 }} onClick={() => { setIsViewFam(false) }}>
-                        click back
+                       back
                     </Button>
                     <FamilyDetails famId={famId} />
                 </Fragment>
