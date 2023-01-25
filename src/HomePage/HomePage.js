@@ -178,7 +178,7 @@ const HomePage = () => {
         // setIsLoading(true);
         setFilterDataLoading(true)
         getFamilyDetails();
-        console.log('calling here')
+        // console.log('calling here')
     }, [paginationData, familyId, respondentName, mobileNumber, villageName])
 
 
@@ -202,6 +202,12 @@ const HomePage = () => {
         setFilterDataLoading(true);
         handleCloseModal();
         deleteFamilyCall(deleteFamilyId, deleteId, loginContext.userId);
+    }
+
+    const onFamilyViewClose = () => {
+        setIsViewFam(false)
+        setFilterDataLoading(true)
+        getFamilyDetails();
     }
 
     return (
@@ -355,7 +361,7 @@ const HomePage = () => {
             {
                 isViewFam &&
                 <Fragment>
-                    <Button style={{ margin: 10, marginTop: 50 }} onClick={() => { setIsViewFam(false) }}>
+                    <Button style={{ margin: 10, marginTop: 50 }} onClick={() => { onFamilyViewClose(false) }}>
                        back
                     </Button>
                     <FamilyDetails famId={famId} />
