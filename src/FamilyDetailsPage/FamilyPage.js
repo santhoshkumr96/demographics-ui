@@ -293,7 +293,16 @@ const FamilyPage = ({ famId }) => {
             "tobacco": "",
             "diabetes": "",
             "bp": "",
-            "osteoporosis": ""
+            "osteoporosis": "",
+            "breastCancer":"",
+            "uterusCancer":"",
+            "oralCancer":"",
+            "obesity":"",
+            "heartDiseases":"",
+            "lungRelatedDiseases":"",
+            "asthma":"",
+            "jointPain":"",
+            "otherDiseases":""
         }
         setMemberData(newMemberData);
     }
@@ -670,7 +679,7 @@ const FamilyPage = ({ famId }) => {
                                     famData.memberDetail !== undefined && famData.memberDetail.map((row, index) => {
                                         if (row.isDeleted === 'N') {
                                             return <Grid item xs={6} style={{ minWidth: 250, padding: 20 }}>
-                                                <Typography  onClick={() => onFamMemberClick(row)}>
+                                                <Typography onClick={() => onFamMemberClick(row)}>
                                                     {row.memberName}
                                                 </Typography>
                                                 <Button variant="contained" onClick={() => deleteMember(row.familyIdRef, row.id, loginContext.userId)}>
@@ -680,13 +689,16 @@ const FamilyPage = ({ famId }) => {
                                         }
                                     })
                                 }
-                                <Button
-                                    style={{ marginTop: 20, marginLeft: 20 }}
-                                    variant="contained"
-                                    onClick={() => addNewMember()}
-                                >
-                                    Add Member
-                                </Button>
+                                <Grid item xs={6} style={{ minWidth: 250, padding: 20 }}>
+                                    <Button
+                                        style={{ marginTop: 20, marginLeft: 20 }}
+                                        variant="contained"
+                                        onClick={() => addNewMember()}
+                                    >
+                                        Add Member
+                                    </Button>
+                                </Grid>
+
                             </Grid>
                         </AccordionDetails>
                     </Accordion>

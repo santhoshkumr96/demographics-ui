@@ -282,7 +282,7 @@ const MemberPage = ({ memberDetails, closePage }) => {
             <Grid style={{ padding: 20 }} container spacing={2}>
                 <Grid item xs={4} style={{ minWidth: 200 }}>
                     <Typography>
-                        diabetes
+                        Diabetes
                     </Typography>
                     <ToggleButtonGroup
                         color="primary"
@@ -298,7 +298,7 @@ const MemberPage = ({ memberDetails, closePage }) => {
                 </Grid>
                 <Grid item xs={4} style={{ minWidth: 200 }}>
                     <Typography>
-                        bp
+                        Bp
                     </Typography>
                     <ToggleButtonGroup
                         color="primary"
@@ -314,7 +314,7 @@ const MemberPage = ({ memberDetails, closePage }) => {
                 </Grid>
                 <Grid item xs={4} style={{ minWidth: 200 }}>
                     <Typography>
-                        osteoporosis
+                        Osteoporosis
                     </Typography>
                     <ToggleButtonGroup
                         color="primary"
@@ -329,6 +329,149 @@ const MemberPage = ({ memberDetails, closePage }) => {
                     </ToggleButtonGroup>
                 </Grid>
             </Grid>
+
+            <Grid style={{ padding: 20 }} container spacing={2}>
+                <Grid item xs={4} style={{ minWidth: 200 }}>
+                    <Typography>
+                        Breast Cancer
+                    </Typography>
+                    <ToggleButtonGroup
+                        color="primary"
+                        value={(memData.breastCancer === null || memData.breastCancer === "") ? 'N/A' : memData.breastCancer}
+                        exclusive
+                        onChange={(e) => changeFamilyDetails(e.target.value, 'breastCancer')}
+                        aria-label="Platform"
+                    >
+                        <ToggleButton value="N/A">N/A</ToggleButton>
+                        <ToggleButton value="Y">Y</ToggleButton>
+                        <ToggleButton value="N">N</ToggleButton>
+                    </ToggleButtonGroup>
+                </Grid>
+                <Grid item xs={4} style={{ minWidth: 200 }}>
+                    <Typography>
+                        Uterus Cancer
+                    </Typography>
+                    <ToggleButtonGroup
+                        color="primary"
+                        value={(memData.uterusCancer === null || memData.uterusCancer === "") ? 'N/A' : memData.uterusCancer}
+                        exclusive
+                        onChange={(e) => changeFamilyDetails(e.target.value, 'uterusCancer')}
+                        aria-label="Platform"
+                    >
+                        <ToggleButton value="N/A">N/A</ToggleButton>
+                        <ToggleButton value="Y">Y</ToggleButton>
+                        <ToggleButton value="N">N</ToggleButton>
+                    </ToggleButtonGroup>
+                </Grid>
+                <Grid item xs={4} style={{ minWidth: 200 }}>
+                    <Typography>
+                        Oral Cancer
+                    </Typography>
+                    <ToggleButtonGroup
+                        color="primary"
+                        value={(memData.oralCancer === null || memData.oralCancer === "") ? 'N/A' : memData.oralCancer}
+                        exclusive
+                        onChange={(e) => changeFamilyDetails(e.target.value, 'oralCancer')}
+                        aria-label="Platform"
+                    >
+                        <ToggleButton value="N/A">N/A</ToggleButton>
+                        <ToggleButton value="Y">Y</ToggleButton>
+                        <ToggleButton value="N">N</ToggleButton>
+                    </ToggleButtonGroup>
+                </Grid>
+            </Grid>
+
+            <Grid style={{ padding: 20 }} container spacing={2}>
+                <Grid item xs={4} style={{ minWidth: 200 }}>
+                    <Typography>
+                        Obesity
+                    </Typography>
+                    <ToggleButtonGroup
+                        color="primary"
+                        value={(memData.obesity === null || memData.obesity === "") ? 'N/A' : memData.obesity}
+                        exclusive
+                        onChange={(e) => changeFamilyDetails(e.target.value, 'obesity')}
+                        aria-label="Platform"
+                    >
+                        <ToggleButton value="N/A">N/A</ToggleButton>
+                        <ToggleButton value="Y">Y</ToggleButton>
+                        <ToggleButton value="N">N</ToggleButton>
+                    </ToggleButtonGroup>
+                </Grid>
+                <Grid item xs={4} style={{ minWidth: 200 }}>
+                    <Typography>
+                        Heart Diseases
+                    </Typography>
+                    <ToggleButtonGroup
+                        color="primary"
+                        value={(memData.heartDiseases === null || memData.heartDiseases === "") ? 'N/A' : memData.heartDiseases}
+                        exclusive
+                        onChange={(e) => changeFamilyDetails(e.target.value, 'heartDiseases')}
+                        aria-label="Platform"
+                    >
+                        <ToggleButton value="N/A">N/A</ToggleButton>
+                        <ToggleButton value="Y">Y</ToggleButton>
+                        <ToggleButton value="N">N</ToggleButton>
+                    </ToggleButtonGroup>
+                </Grid>
+                <Grid item xs={4} style={{ minWidth: 200 }}>
+                    <Typography>
+                        Lung Related Diseases
+                    </Typography>
+                    <ToggleButtonGroup
+                        color="primary"
+                        value={(memData.lungRelatedDiseases === null || memData.lungRelatedDiseases === "") ? 'N/A' : memData.lungRelatedDiseases}
+                        exclusive
+                        onChange={(e) => changeFamilyDetails(e.target.value, 'lungRelatedDiseases')}
+                        aria-label="Platform"
+                    >
+                        <ToggleButton value="N/A">N/A</ToggleButton>
+                        <ToggleButton value="Y">Y</ToggleButton>
+                        <ToggleButton value="N">N</ToggleButton>
+                    </ToggleButtonGroup>
+                </Grid>
+            </Grid>
+
+            <Grid style={{ padding: 20 }} container spacing={2}>
+                <Grid item xs={4} style={{ minWidth: 200 }}>
+                    <Typography>
+                        Asthma
+                    </Typography>
+                    <ToggleButtonGroup
+                        color="primary"
+                        value={(memData.asthma === null || memData.asthma === "") ? 'N/A' : memData.asthma}
+                        exclusive
+                        onChange={(e) => changeFamilyDetails(e.target.value, 'asthma')}
+                        aria-label="Platform"
+                    >
+                        <ToggleButton value="N/A">N/A</ToggleButton>
+                        <ToggleButton value="Y">Y</ToggleButton>
+                        <ToggleButton value="N">N</ToggleButton>
+                    </ToggleButtonGroup>
+                </Grid>
+                <Grid item xs={4} style={{ minWidth: 200 }}>
+                    <Typography>
+                        Joint Pain
+                    </Typography>
+                    <ToggleButtonGroup
+                        color="primary"
+                        value={(memData.jointPain === null || memData.jointPain === "") ? 'N/A' : memData.jointPain}
+                        exclusive
+                        onChange={(e) => changeFamilyDetails(e.target.value, 'bp')}
+                        aria-label="Platform"
+                    >
+                        <ToggleButton value="N/A">N/A</ToggleButton>
+                        <ToggleButton value="Y">Y</ToggleButton>
+                        <ToggleButton value="N">N</ToggleButton>
+                    </ToggleButtonGroup>
+                </Grid>
+                <Grid item xs={4} style={{ minWidth: 200 }}>
+                    <TextField value={memData.otherDiseases + ''}
+                        onChange={(e) => changeFamilyDetails(e.target.value, 'otherDiseases')}
+                        id="standard-basic" label="Other Diseases" variant="standard" />
+                </Grid>
+            </Grid>
+
 
             <Grid style={{ padding: 20 }} container spacing={2}>
                 <Grid item xs={4} style={{ minWidth: 200 }}>

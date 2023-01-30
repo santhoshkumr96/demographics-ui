@@ -210,6 +210,16 @@ const HomePage = () => {
         getFamilyDetails();
     }
 
+    const getCountOfMembers = (row) => {
+        let count = 0
+        row.memberDetail.map((e)=>{
+            if(e.isDeleted === "N"){
+                count = count + 1
+            }
+        })
+        return count;
+    }
+
     return (
         <Fragment>
 
@@ -288,7 +298,7 @@ const HomePage = () => {
                                             <TableCell>{row.familyId} </TableCell>
                                             <TableCell>{row.respondentName}</TableCell>
                                             <TableCell>{row.mobileNumber}</TableCell>
-                                            <TableCell>{Object.keys(row.memberDetail).length}</TableCell>
+                                            <TableCell>{getCountOfMembers(row)}</TableCell>
                                             <TableCell>{row.demographicDetail.villageName}</TableCell>
                                             <TableCell>{'in progress'}</TableCell>
                                             <TableCell style={{minWidth: 100}}>
