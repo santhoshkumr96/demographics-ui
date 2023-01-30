@@ -302,7 +302,9 @@ const FamilyPage = ({ famId }) => {
             "lungRelatedDiseases":"",
             "asthma":"",
             "jointPain":"",
-            "otherDiseases":""
+            "otherDiseases":"",
+            "community":"",
+            "caste":""
         }
         setMemberData(newMemberData);
     }

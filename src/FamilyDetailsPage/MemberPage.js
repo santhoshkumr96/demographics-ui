@@ -73,6 +73,19 @@ const MemberPage = ({ memberDetails, closePage }) => {
 
             <Grid style={{ padding: 20 }} container spacing={2}>
                 <Grid item xs={3} style={{ minWidth: 150 }}>
+                    <TextField value={memData.community + ''}
+                        onChange={(e) => changeFamilyDetails(e.target.value, 'community')}
+                        id="standard-basic" label="Community" variant="standard" />
+                </Grid>
+                <Grid item xs={3} style={{ minWidth: 150 }}>
+                    <TextField value={memData.caste + ''}
+                        onChange={(e) => changeFamilyDetails(e.target.value, 'caste')}
+                        id="standard-basic" label="caste" variant="standard" />
+                </Grid>
+            </Grid>
+
+            <Grid style={{ padding: 20 }} container spacing={2}>
+                <Grid item xs={3} style={{ minWidth: 150 }}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <MobileDatePicker
                             label="Date Of Birth"
