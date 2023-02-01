@@ -304,7 +304,12 @@ const FamilyPage = ({ famId }) => {
             "jointPain":"",
             "otherDiseases":"",
             "community":"",
-            "caste":""
+            "caste":"",
+            "relationship": 0,
+            "maritalStatus": 0,
+            "bloodGroup": 0,
+            "educationQualification": 0,
+            "annualIncome": 0
         }
         setMemberData(newMemberData);
     }

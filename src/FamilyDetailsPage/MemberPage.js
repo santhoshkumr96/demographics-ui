@@ -1,4 +1,4 @@
-import { Typography, Button, Grid, TextField, Snackbar, ToggleButtonGroup, ToggleButton, Alert, CircularProgress, Backdrop } from "@mui/material";
+import { Typography, Button, Grid, TextField,Autocomplete, Snackbar, ToggleButtonGroup, ToggleButton, Alert, CircularProgress, Backdrop } from "@mui/material";
 import { Fragment, useEffect, useState } from "react";
 import ajax from "../ajaxHelper";
 import { SERVICE_BASE_URL } from "../config";
@@ -23,6 +23,13 @@ const MemberPage = ({ memberDetails, closePage }) => {
     const closeMemberPage = () => {
         closePage();
     }
+    const [genderData, setGenderData] = useState([]);
+    const [releationshipData, setReleationshipData] = useState([]);
+    const [annualIncomeData, setAnnualIncomeData] = useState([]);
+    const [educationalQualificationData, setEducationalQualificationData] = useState([]);
+    const [maritalStatusData, setMaritalStatusData] = useState([]);
+    const [bloodGroupData, setBloodGroupData] = useState([]);
+
 
     const changeFamilyDetails = (value, key) => {
         const temp = { ...memData };
@@ -48,6 +55,41 @@ const MemberPage = ({ memberDetails, closePage }) => {
             }
             );
     }
+
+
+    const getDataForDropDown = (uri, functionTosetData) => {
+        const config = {};
+        setIsLoading(true);
+        ajax
+            .get(`${SERVICE_BASE_URL}/` + uri, { config })
+            .then((res) => {
+                setIsLoading(false);
+                functionTosetData(res.data);
+            })
+            .catch((e) => {
+                setIsLoading(false);
+                setisError(true);
+                seterrorMessage(e.response.data.message);
+                console.log(e)
+            }
+            );
+    }
+
+    const onChangeLabel = (data, key, idKey) => {
+        const temp = { ...memData }
+        temp[key] = data;
+        temp[idKey] = data.id;
+        setMemData(temp);
+    }
+
+    useEffect(() => {
+        getDataForDropDown('getGender', setGenderData)
+        getDataForDropDown('getRelationship', setReleationshipData)
+        getDataForDropDown('getEducationQualification', setEducationalQualificationData)
+        getDataForDropDown('getBloodGroup', setBloodGroupData)
+        getDataForDropDown('getMaritalStatus', setMaritalStatusData)
+        getDataForDropDown('getAnnualIncome', setAnnualIncomeData)
+    }, [])
 
 
 
@@ -81,6 +123,103 @@ const MemberPage = ({ memberDetails, closePage }) => {
                     <TextField value={memData.caste + ''}
                         onChange={(e) => changeFamilyDetails(e.target.value, 'caste')}
                         id="standard-basic" label="caste" variant="standard" />
+                </Grid>
+            </Grid>
+
+            <Grid style={{ padding: 20 }} container spacing={2}>
+                <Grid item xs={3} style={{ minWidth: 150 }}>
+                    <Autocomplete
+                        id="combo-box-demo"
+                        options={genderData.map((e) => {
+                            const temp = { ...e }
+                            temp.label = e.type
+                            return temp
+                        })}
+                        onChange={(event, newValue) => {
+                            onChangeLabel(newValue, 'genderDetails', 'gender');
+                        }}
+                        value={memData.genderDetails === undefined ? null : (memData.genderDetails.type + '')}
+                        renderInput={(params) => <TextField {...params} variant="standard" label="Gender" />}
+                    />
+                </Grid>
+                <Grid item xs={3} style={{ minWidth: 150 }}>
+                    <Autocomplete
+                        id="combo-box-demo"
+                        options={releationshipData.map((e) => {
+                            const temp = { ...e }
+                            temp.label = e.type
+                            return temp
+                        })}
+                        onChange={(event, newValue) => {
+                            onChangeLabel(newValue, 'relationshipDetails', 'relationship');
+                        }}
+                        value={memData.relationshipDetails === undefined ? null : (memData.relationshipDetails.type + '')}
+                        renderInput={(params) => <TextField {...params} variant="standard" label="Relationship" />}
+                    />
+                </Grid>
+                <Grid item xs={3} style={{ minWidth: 150 }}>
+                    <Autocomplete
+                        id="combo-box-demo"
+                        options={maritalStatusData.map((e) => {
+                            const temp = { ...e }
+                            temp.label = e.type
+                            return temp
+                        })}
+                        onChange={(event, newValue) => {
+                            onChangeLabel(newValue, 'maritalStatusDetails', 'maritalStatus');
+                        }}
+                        value={memData.maritalStatusDetails === undefined ? null : (memData.maritalStatusDetails.type + '')}
+                        renderInput={(params) => <TextField {...params} variant="standard" label="Marital Status" />}
+                    />
+                </Grid>
+            </Grid>
+
+
+            <Grid style={{ padding: 20 }} container spacing={2}>
+                <Grid item xs={3} style={{ minWidth: 150 }}>
+                    <Autocomplete
+                        id="combo-box-demo"
+                        options={bloodGroupData.map((e) => {
+                            const temp = { ...e }
+                            temp.label = e.type
+                            return temp
+                        })}
+                        onChange={(event, newValue) => {
+                            onChangeLabel(newValue, 'bloodGroupDetails', 'bloodGroup');
+                        }}
+                        value={memData.bloodGroupDetails === undefined ? null : (memData.bloodGroupDetails.type + '')}
+                        renderInput={(params) => <TextField {...params} variant="standard" label="Blood Group" />}
+                    />
+                </Grid>
+                <Grid item xs={3} style={{ minWidth: 150 }}>
+                    <Autocomplete
+                        id="combo-box-demo"
+                        options={educationalQualificationData.map((e) => {
+                            const temp = { ...e }
+                            temp.label = e.type
+                            return temp
+                        })}
+                        onChange={(event, newValue) => {
+                            onChangeLabel(newValue, 'educationQualificationDetails', 'educationQualification');
+                        }}
+                        value={memData.educationQualificationDetails === undefined ? null : (memData.educationQualificationDetails.type + '')}
+                        renderInput={(params) => <TextField {...params} variant="standard" label="Education Qualification" />}
+                    />
+                </Grid>
+                <Grid item xs={3} style={{ minWidth: 150 }}>
+                    <Autocomplete
+                        id="combo-box-demo"
+                        options={annualIncomeData.map((e) => {
+                            const temp = { ...e }
+                            temp.label = e.type
+                            return temp
+                        })}
+                        onChange={(event, newValue) => {
+                            onChangeLabel(newValue, 'annualIncomeDetails', 'annualIncome');
+                        }}
+                        value={memData.annualIncomeDetails === undefined ? null : (memData.annualIncomeDetails.type + '')}
+                        renderInput={(params) => <TextField {...params} variant="standard" label="Annual Income" />}
+                    />
                 </Grid>
             </Grid>
 
