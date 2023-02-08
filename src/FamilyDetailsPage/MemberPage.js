@@ -44,8 +44,10 @@ const MemberPage = ({ memberDetails, closePage }) => {
             .post(`${SERVICE_BASE_URL}/saveMember`, memData, { config })
             .then((res) => {
                 setIsLoading(false);
-                setMemData(res.data);
-                console.log(res.data);
+                // console.log(memData)
+                // setMemData(res.data);
+                // console.log(res.data);
+                closeMemberPage();
             })
             .catch((e) => {
                 setIsLoading(false);
@@ -89,7 +91,7 @@ const MemberPage = ({ memberDetails, closePage }) => {
         getDataForDropDown('getBloodGroup', setBloodGroupData)
         getDataForDropDown('getMaritalStatus', setMaritalStatusData)
         getDataForDropDown('getAnnualIncome', setAnnualIncomeData)
-    }, [])
+    }, [memData])
 
 
 
@@ -479,6 +481,80 @@ const MemberPage = ({ memberDetails, closePage }) => {
                         <ToggleButton value="Y">Y</ToggleButton>
                         <ToggleButton value="N">N</ToggleButton>
                     </ToggleButtonGroup>
+                </Grid>
+            </Grid>
+
+            <Grid style={{ padding: 20 }} container spacing={2}>
+                <Grid item xs={4} style={{ minWidth: 200 }}>
+                        <Typography>
+                            Osteoporosis Scanned ?
+                        </Typography>
+                        <ToggleButtonGroup
+                            color="primary"
+                            value={(memData.isOsteoporosisScan === null || memData.isOsteoporosisScan === "") ? 'N/A' : memData.isOsteoporosisScan}
+                            exclusive
+                            onChange={(e) => changeFamilyDetails(e.target.value, 'isOsteoporosisScan')}
+                            aria-label="Platform"
+                        >
+                            <ToggleButton value="N/A">N/A</ToggleButton>
+                            <ToggleButton value="Y">Y</ToggleButton>
+                            <ToggleButton value="N">N</ToggleButton>
+                        </ToggleButtonGroup>
+                </Grid>
+                <Grid item xs={4} style={{ minWidth: 250 }}>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <MobileDatePicker
+                            label="Osteoporosis Scan One Date"
+                            inputFormat="DD/MM/YYYY"
+                            value={memData.osteoporosisScanOne}
+                            onChange={(e) => changeFamilyDetails(e, 'osteoporosisScanOne')}
+                            renderInput={(params) => <TextField  style={{ minWidth: 250 }} variant="standard" {...params} />}
+                        />
+
+                    </LocalizationProvider>
+                </Grid>
+                <Grid item xs={4} style={{ minWidth: 200 }}>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <MobileDatePicker
+                            label="Osteoporosis Scan Two Date"
+                            inputFormat="DD/MM/YYYY"
+                            value={memData.osteoporosisScanTwo}
+                            onChange={(e) => changeFamilyDetails(e, 'osteoporosisScanTwo')}
+                            renderInput={(params) => <TextField variant="standard" {...params} />}
+                        />
+
+                    </LocalizationProvider>
+                </Grid>
+            </Grid>
+
+            <Grid style={{ padding: 20 }} container spacing={2}>
+                <Grid item xs={4} style={{ minWidth: 200 }}>
+                        <Typography>
+                            Is Deceased ?
+                        </Typography>
+                        <ToggleButtonGroup
+                            color="primary"
+                            value={(memData.isDeceased === null || memData.isDeceased === "") ? 'N/A' : memData.isDeceased}
+                            exclusive
+                            onChange={(e) => changeFamilyDetails(e.target.value, 'isDeceased')}
+                            aria-label="Platform"
+                        >
+                            <ToggleButton value="N/A">N/A</ToggleButton>
+                            <ToggleButton value="Y">Y</ToggleButton>
+                            <ToggleButton value="N">N</ToggleButton>
+                        </ToggleButtonGroup>
+                </Grid>
+                <Grid item xs={4} style={{ minWidth: 250 }}>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <MobileDatePicker
+                            label="Deceased Date"
+                            inputFormat="DD/MM/YYYY"
+                            value={memData.deceasedDate}
+                            onChange={(e) => changeFamilyDetails(e, 'deceasedDate')}
+                            renderInput={(params) => <TextField  style={{ minWidth: 250 }} variant="standard" {...params} />}
+                        />
+
+                    </LocalizationProvider>
                 </Grid>
             </Grid>
 

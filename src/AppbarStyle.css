@@ -4,7 +4,7 @@ body {
   }
   
   .Navbar {
-    background-color: lightsteelblue;
+    background-color: #1F8A70;
     position: fixed;
     top: 0;
     left: auto;
@@ -20,7 +20,7 @@ body {
   
   .Toolbar {
     display: flex;
-    min-height: 40px;
+    min-height: 55px;
     align-items: center;
     padding: 0px 10px;
   }
@@ -31,5 +31,7 @@ body {
   
   .Title {
     flex-grow: 1;
+    font-family: sans-serif;
+    color: white;
   }
   

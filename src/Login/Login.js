@@ -72,9 +72,11 @@ const Login = () => {
             justifyContent="center"
             style={{ minHeight: '100vh' }}
         >
-            <Grid item xs={12}>
+            <Grid item xs={12} style={{ boxShadow: '5px 10px 200px #1f8a70' ,background: 'white', padding : 50 , borderRadius : 30}}>
                 <Stack spacing={2}>
-                    <Container>
+                    <Container
+                       style={{ display:'flex', justifyContent:'center' }}
+                    >
                         <img
                             src={require('../resources/thirumalai.jpg')}
                             width={100}
@@ -101,6 +103,7 @@ const Login = () => {
                         onChange={(e) => setpassword(e.target.value)}
                     />
                     <Button
+                        style={{background: '#FC7300' , borderRadius : 30}}
                         variant="contained"
                         onClick={() => login()}
                     >

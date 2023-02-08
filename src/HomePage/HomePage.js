@@ -1,4 +1,4 @@
-import { Container, Button, Snackbar, Alert, Backdrop, CircularProgress, TablePagination, TextField, Badge } from '@mui/material';
+import { Container, Button, Snackbar, Alert, Backdrop, CircularProgress, TablePagination, TextField, Badge, IconButton } from '@mui/material';
 import { useEffect, useContext, Fragment } from 'react';
 import { useState } from 'react';
 import ajax from '../ajaxHelper';
@@ -22,6 +22,8 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import LoginContext from '../LoginAuthProvider/LoginContext';
 import FamilyDetails from '../FamilyDetailsPage/FamilyDetails';
+import AddIcon from '@mui/icons-material/Add';
+import SearchIcon from '@mui/icons-material/Search';
 
 const style = {
     position: 'absolute',
@@ -88,6 +90,8 @@ const HomePage = () => {
     const handleCloseModal = () => setOpenModal(false);
     const [deleteFamilyId, setDeleteFamilyId] = useState('');
     const [deleteId, setDeleteId] = useState(0);
+
+    const [isSearchEnabled, setIsSearchEnabled] = useState(false);
 
 
     //default page handlers
@@ -212,12 +216,16 @@ const HomePage = () => {
 
     const getCountOfMembers = (row) => {
         let count = 0
-        row.memberDetail.map((e)=>{
-            if(e.isDeleted === "N"){
+        row.memberDetail.map((e) => {
+            if (e.isDeleted === "N") {
                 count = count + 1
             }
         })
         return count;
+    }
+
+    const searchEnableButton = () => {
+        setIsSearchEnabled(!isSearchEnabled);
     }
 
     return (
@@ -226,22 +234,43 @@ const HomePage = () => {
             {
                 !isViewFam &&
 
-                <Grid style={{ margin: 10, marginTop: 50 }} container rowSpacing={3} spacing={2}>
-                    <Stack>
-                        <Stack direction="row" spacing={2}>
-                            <TextField id="outlined-basic" size="small" label="Family Id" variant="outlined"
+                <Grid container rowSpacing={3} spacing={2}>
+
+                    <Grid container spacing={2} style={{ marginTop: '80px', justifyContent: 'right', marginRight: '30px' }}>
+                        <TablePagination
+                            className="pagnation-div"
+                            rowsPerPageOptions={[10, 25, 100, 1000]}
+                            component="div"
+                            count={popDataCount}
+                            rowsPerPage={rowsPerPage}
+                            page={page}
+                            onPageChange={handleChangePage}
+                            onRowsPerPageChange={handleChangeRowsPerPage}
+                        />
+                        <Button style={{ margin: '5px' }} variant="contained" size="small" onClick={() => addFamily()} aria-label="delete">
+                            <AddIcon style={{ color: 'white' }} />
+                        </Button>
+                        <Button style={{ margin: '5px' }} variant="contained" size="small" onClick={() => searchEnableButton()} aria-label="delete">
+                            <SearchIcon style={{ color: 'white' }} />
+                        </Button>
+                    </Grid>
+
+                    {
+                        isSearchEnabled &&
+                        <Grid container spacing={2} style={{ justifyContent: 'right', marginRight: '30px', marginTop: '10px' , marginBottom: '10px'}}>
+                            <TextField style={{marginRight:'10px'}} id="outlined-basic" size="small" label="Family Id" variant="outlined"
                                 value={familyId}
                                 onChange={(e) => setFamilyId(e.target.value)}
                             />
-                            <TextField id="outlined-basic" size="small" label="Respondent Name" variant="outlined"
+                            <TextField style={{marginRight:'10px'}} id="outlined-basic" size="small" label="Respondent Name" variant="outlined"
                                 value={respondentName}
                                 onChange={(e) => setRespondentName(e.target.value)}
                             />
-                            <TextField id="outlined-basic" size="small" label="Mobile Number" variant="outlined"
+                            <TextField style={{marginRight:'10px'}} id="outlined-basic" size="small" label="Mobile Number" variant="outlined"
                                 value={mobileNumber}
                                 onChange={(e) => setMobileNumber(e.target.value)}
                             />
-                            <TextField id="outlined-basic" size="small" label="Village Name" variant="outlined"
+                            <TextField style={{marginRight:'10px'}} id="outlined-basic" size="small" label="Village Name" variant="outlined"
                                 value={villageName}
                                 onChange={(e) => setVillageName(e.target.value)}
                             />
@@ -251,79 +280,62 @@ const HomePage = () => {
                             >
                                 Clear
                             </Button>
-                        </Stack>
+                        </Grid>
+                    }
 
-                        <Stack direction="row" spacing={2}>
 
-                            <TablePagination
-                                className="pagnation-div"
-                                rowsPerPageOptions={[10, 25, 100, 1000]}
-                                component="div"
-                                count={popDataCount}
-                                rowsPerPage={rowsPerPage}
-                                page={page}
-                                onPageChange={handleChangePage}
-                                onRowsPerPageChange={handleChangeRowsPerPage}
-                            />
-                            <Button
-                                variant="contained"
-                                onClick={() => addFamily()}
-                            >
-                                Add
-                            </Button>
-                        </Stack>
-                        <TableContainer component={Paper}>
-                            <Table aria-label="simple table">
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell >S.No</TableCell>
-                                        <TableCell >Id</TableCell>
-                                        <TableCell >Family Id</TableCell>
-                                        <TableCell >Respondent Name</TableCell>
-                                        <TableCell >Mobile Number</TableCell>
-                                        <TableCell >Number Of Family Members</TableCell>
-                                        <TableCell >Village Name</TableCell>
-                                        <TableCell >Status</TableCell>
-                                        <TableCell >Action</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {!filterDataLoading && data.map((row, index) => (
-                                        <TableRow
-                                            key={row.name}
-                                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                        >
-                                            <TableCell>{(page * rowsPerPage) + index + 1} </TableCell>
-                                            <TableCell>{row.id} </TableCell>
-                                            <TableCell>{row.familyId} </TableCell>
-                                            <TableCell>{row.respondentName}</TableCell>
-                                            <TableCell>{row.mobileNumber}</TableCell>
-                                            <TableCell>{getCountOfMembers(row)}</TableCell>
-                                            <TableCell>{row.demographicDetail.villageName}</TableCell>
-                                            <TableCell>{'in progress'}</TableCell>
+
+                    <TableContainer style={{marginLeft:'30px', marginRight:'10px'}}component={Paper}>
+                        <Table aria-label="simple table">
+                            <TableHead>
+                                <TableRow style={{background:'#FC7300'}}>
+                                    <TableCell  style={{color:'white', minWidth:'100px'}} >S.No</TableCell>
+                                    <TableCell  style={{color:'white', minWidth:'100px'}} >Id</TableCell>
+                                    <TableCell  style={{color:'white', minWidth:'100px'}} >Family Id</TableCell>
+                                    <TableCell  style={{color:'white', minWidth:'100px'}} >Respondent Name</TableCell>
+                                    <TableCell  style={{color:'white', minWidth:'100px'}} >Mobile Number</TableCell>
+                                    <TableCell  style={{color:'white', minWidth:'100px'}} >No Family Members</TableCell>
+                                    <TableCell  style={{color:'white', minWidth:'100px'}} >Village Name</TableCell>
+                                    <TableCell  style={{color:'white', minWidth:'100px'}} >Status</TableCell>
+                                    <TableCell  style={{color:'white', minWidth:'100px'}} >Action</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {!filterDataLoading && data.map((row, index) => (
+                                    <TableRow
+                                        key={row.name}
+                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                    >
+                                        <TableCell>{(page * rowsPerPage) + index + 1} </TableCell>
+                                        <TableCell>{row.id} </TableCell>
+                                        <TableCell>{row.familyId} </TableCell>
+                                        <TableCell>{row.respondentName}</TableCell>
+                                        <TableCell>{row.mobileNumber}</TableCell>
+                                        <TableCell>{getCountOfMembers(row)}</TableCell>
+                                        <TableCell>{row.demographicDetail.villageName}</TableCell>
+                                        <TableCell>{'in progress'}</TableCell>
                                             <TableCell style={{minWidth: 100}}>
-                                                <Badge onClick={() => editFamily(row.id)} color="primary">
-                                                    <EditIcon color="action" />
-                                                </Badge>
-                                                <Badge onClick={() => deleteFamily(row.familyId, row.id)} style={{ marginLeft: 20 }} color="primary">
-                                                    <DeleteIcon color="action" />
-                                                </Badge>
+                                                <IconButton   onClick={() => editFamily(row.id)} color="primary">
+                                                    <EditIcon  color="primary"/>
+                                                </IconButton>
+                                                <IconButton onClick={() => deleteFamily(row.familyId, row.id)} style={{ marginLeft: 20 }} color="primary">
+                                                    <DeleteIcon color="error" />
+                                                </IconButton>
                                             </TableCell>
                                         </TableRow>
                                     ))}
 
-                                </TableBody>
-                            </Table>
-                            {
-                                filterDataLoading &&
-                                <Container sx={{ width: 300 }}>
-                                    <Skeleton />
-                                    <Skeleton animation="wave" />
-                                    <Skeleton animation={false} />
-                                </Container>
-                            }
-                        </TableContainer>
-                    </Stack>
+                            </TableBody>
+                        </Table>
+                        {
+                            filterDataLoading &&
+                            <Container sx={{ width: 300 }}>
+                                <Skeleton />
+                                <Skeleton animation="wave" />
+                                <Skeleton animation={false} />
+                            </Container>
+                        }
+                    </TableContainer>
 
                     <Snackbar open={isError} autoHideDuration={4000} onClose={handleClose}>
                         <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
@@ -371,10 +383,11 @@ const HomePage = () => {
             {
                 isViewFam &&
                 <Fragment>
-                    <Button style={{ margin: 10, marginTop: 50 }} onClick={() => { onFamilyViewClose(false) }}>
-                       back
-                    </Button>
+
                     <FamilyDetails famId={famId} />
+                    {/* <Button style={{marginTop: '20px'}} onClick={() => { onFamilyViewClose(false) }}>
+                        back
+                    </Button> */}
                 </Fragment>
 
             }

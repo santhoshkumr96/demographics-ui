@@ -6,7 +6,6 @@ import { TabPanel } from '@mui/lab/TabPanel';
 import FamilyPage from "./FamilyPage";
 import { ConnectingAirportsOutlined } from "@mui/icons-material";
 
-
 const FamilyDetails = ({famId}) => {
 
     const [value, setValue] = useState('1');
@@ -26,7 +25,7 @@ const FamilyDetails = ({famId}) => {
     };
 
     return (
-        <Fragment>
+        <Fragment >
             {/* <Box sx={{ bgcolor: 'background.paper', marginTop: "50px !important" }}>
             <Tabs value={value} onChange={handleChangeTab} centered>
 

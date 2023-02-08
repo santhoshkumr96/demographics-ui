@@ -1,13 +1,14 @@
 
 import { Fragment, useContext, useEffect, useState } from "react";
 import HomePage from './HomePage/HomePage';
-import { AppBar, Box, Button, Container, Stack, Toolbar, Typography } from '@mui/material';
+import { AppBar, Box, Button, Container, IconButton, Stack, Toolbar, Typography } from '@mui/material';
 import LoginContext from "./LoginAuthProvider/LoginContext";
 import FamilyDetails from "./FamilyDetailsPage/FamilyDetails";
 import ajax from "./ajaxHelper";
 import { SERVICE_BASE_URL } from "./config";
 import "./AppbarStyle.css";
 // import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+import LogoutIcon from '@mui/icons-material/Logout';
 
 
 const AppBarPage = () => {
@@ -33,15 +34,17 @@ const AppBarPage = () => {
                     <div className="Logo">
                         {" "}
                         <span role="img" aria-label="logo">
-                            <img src={require('./resources/thirumalai.jpg')} width={20}/>
+                            <img src={require('./resources/thirumalai.jpg')} width={30} />
                         </span>{" "}
                     </div>
                     <div className="Title"> TCT Demographics</div>
-                    <Button onClick={()=> logout()}>logout</Button>
+                    <IconButton onClick={() => logout()} aria-label="delete">
+                        <LogoutIcon style={{color:'white'}}/>
+                    </IconButton>
                 </div>
             </header>
 
-            <HomePage /> 
+            <HomePage />
             {/* <FamilyDetails /> */}
         </Fragment>
     );

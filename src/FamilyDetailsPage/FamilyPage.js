@@ -1,5 +1,5 @@
 
-import { Grid, Typography, Snackbar, Alert, Backdrop, CircularProgress, TextField, Button, Autocomplete } from '@mui/material';
+import { Grid, Typography,Stack, Snackbar, Container,Modal,Box, Alert, Backdrop, CircularProgress, TextField, Button, Autocomplete } from '@mui/material';
 import { Fragment, useState, useEffect } from 'react';
 import ajax from '../ajaxHelper';
 import { SERVICE_BASE_URL } from '../config';
@@ -12,6 +12,8 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import MemberPage from './MemberPage';
+import { useNavigate } from 'react-router-dom';
+
 
 const defaultAreaFilter = {
     panchayat: '',
@@ -19,6 +21,19 @@ const defaultAreaFilter = {
     villageName: '',
     streetName: ''
 }
+
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '1px solid #000',
+    boxShadow: 24,
+    p: 4,
+};
+
 
 const defaultFamilyDetails = {
 
@@ -53,6 +68,8 @@ const defaultFamilyDetails = {
 }
 
 const FamilyPage = ({ famId }) => {
+    const navigate = useNavigate();
+
 
     const loginContext = useContext(LoginContext);
     const [famData, setFamData] = useState(defaultFamilyDetails)
@@ -68,6 +85,10 @@ const FamilyPage = ({ famId }) => {
     const [typeOfHouseData, setTypeOfHouseData] = useState([]);
 
     const [statusOfHouseData, setStatusOfHouseData] = useState([]);
+    const [openModal, setOpenModal] = useState(false);
+    const handleOpenModal = () => setOpenModal(true);
+    const handleCloseModal = () => setOpenModal(false);
+    const [deleteMemberDetails, setDeleteMemberDetails] = useState({});
 
     //default page handlers
     const [isError, setisError] = useState(false);
@@ -80,6 +101,7 @@ const FamilyPage = ({ famId }) => {
 
     const getFamily = (id) => {
         const config = {};
+        setIsLoading(true);
         ajax
             .post(`${SERVICE_BASE_URL}/getFamilyDetail?id=` + id, {}, { config })
             .then((res) => {
@@ -102,7 +124,10 @@ const FamilyPage = ({ famId }) => {
         setIsLoading(true);
         if (famId === 0) {
             famData.createdBy = loginContext.userId
-        }
+        } 
+            
+        famData.updatedBy = loginContext.userId
+       
         ajax
             .post(`${SERVICE_BASE_URL}/saveFamily`, famData, { config })
             .then((res) => {
@@ -178,12 +203,13 @@ const FamilyPage = ({ famId }) => {
             );
     }
 
-    const deleteMember = (familyId, id, userId) => {
+    const deleteMember = (deleteConfig) => {
         const config = {};
         ajax
-            .post(`${SERVICE_BASE_URL}/deleteMember`, { familyId, id, userId }, { config })
+            .post(`${SERVICE_BASE_URL}/deleteMember`,deleteConfig, { config })
             .then((res) => {
                 getFamily(famData.id)
+                handleCloseModal();
             })
             .catch((e) => {
                 setIsLoading(false);
@@ -192,6 +218,12 @@ const FamilyPage = ({ famId }) => {
                 console.log(e)
             }
             );
+    }
+
+    const deleteMemberDetailsOnDelete = (familyId, id, userId) => {
+        const temp = { familyId, id, userId };
+        setDeleteMemberDetails(temp);
+        handleOpenModal();
     }
 
     const genAreaLables = (area) => {
@@ -294,22 +326,27 @@ const FamilyPage = ({ famId }) => {
             "diabetes": "",
             "bp": "",
             "osteoporosis": "",
-            "breastCancer":"",
-            "uterusCancer":"",
-            "oralCancer":"",
-            "obesity":"",
-            "heartDiseases":"",
-            "lungRelatedDiseases":"",
-            "asthma":"",
-            "jointPain":"",
-            "otherDiseases":"",
-            "community":"",
-            "caste":"",
+            "breastCancer": "",
+            "uterusCancer": "",
+            "oralCancer": "",
+            "obesity": "",
+            "heartDiseases": "",
+            "lungRelatedDiseases": "",
+            "asthma": "",
+            "jointPain": "",
+            "otherDiseases": "",
+            "community": "",
+            "caste": "",
             "relationship": 0,
             "maritalStatus": 0,
             "bloodGroup": 0,
             "educationQualification": 0,
-            "annualIncome": 0
+            "annualIncome": 0,
+            "isOsteoporosisScan":"",
+            "osteoporosisScanOne":null,
+            "osteoporosisScanTwo":null,
+            "deceasedDate":null,
+            "isDeceased":""
         }
         setMemberData(newMemberData);
     }
@@ -370,7 +407,7 @@ const FamilyPage = ({ famId }) => {
             {!isMemberView &&
                 <Fragment >
 
-                    <Accordion>
+                    <Accordion style={{ marginTop: 60 }}>
                         <AccordionSummary
                             expandIcon={<ExpandMoreIcon />}
                             aria-controls="panel1a-content"
@@ -689,7 +726,7 @@ const FamilyPage = ({ famId }) => {
                                                 <Typography onClick={() => onFamMemberClick(row)}>
                                                     {row.memberName}
                                                 </Typography>
-                                                <Button variant="contained" onClick={() => deleteMember(row.familyIdRef, row.id, loginContext.userId)}>
+                                                <Button variant="contained" onClick={() => deleteMemberDetailsOnDelete(row.familyIdRef, row.id, loginContext.userId)}>
                                                     delete
                                                 </Button>
                                             </Grid>
@@ -711,6 +748,39 @@ const FamilyPage = ({ famId }) => {
                     </Accordion>
 
 
+                    <Button onClick={() => navigate(-2)}>
+                        back
+                    </Button>
+
+
+                    <Modal
+                        open={openModal}
+                        onClose={handleCloseModal}
+                        aria-labelledby="modal-modal-title"
+                        aria-describedby="modal-modal-description"
+                    >
+                        <Box sx={style}>
+                            <Typography id="modal-modal-title" variant="h6" component="h2">
+                                Are you sure you want to delete {deleteMemberDetails.id}
+                            </Typography>
+                            <Container >
+                                <Stack direction="row" spacing={2} style={{ marginTop: 20 }}>
+                                    <Button
+                                        variant="contained"
+                                        onClick={() => deleteMember(deleteMemberDetails)}
+                                    >
+                                        confirm
+                                    </Button>
+                                    <Button
+                                        variant="outlined"
+                                        onClick={() => handleCloseModal()}
+                                    >
+                                        cancel
+                                    </Button>
+                                </Stack>
+                            </Container>
+                        </Box>
+                    </Modal>
 
                     <Snackbar open={isError} autoHideDuration={4000} onClose={handleClose}>
                         <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
