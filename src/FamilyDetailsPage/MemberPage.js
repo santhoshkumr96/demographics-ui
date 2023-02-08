@@ -1,4 +1,4 @@
-import { Typography, Button, Grid, TextField,Autocomplete, Snackbar, ToggleButtonGroup, ToggleButton, Alert, CircularProgress, Backdrop } from "@mui/material";
+import { Typography, Button, Grid, TextField, Autocomplete, Snackbar, ToggleButtonGroup, ToggleButton, Alert, CircularProgress, Backdrop } from "@mui/material";
 import { Fragment, useEffect, useState } from "react";
 import ajax from "../ajaxHelper";
 import { SERVICE_BASE_URL } from "../config";
@@ -97,25 +97,28 @@ const MemberPage = ({ memberDetails, closePage }) => {
 
     return (
         <Fragment>
-            <Grid style={{ padding: 20 }} container spacing={2}>
-                <Grid item xs={3} style={{ minWidth: 150 }}>
+            <Grid style={{ marginTop: 70, paddingLeft: 10 }} container spacing={2}>
+                <Grid item xs={12} style={{ paddingRight: 10 }} >
                     <TextField value={memData.memberName + ''}
+                        style={{ width: '100%' }}
                         onChange={(e) => changeFamilyDetails(e.target.value, 'memberName')}
-                        id="standard-basic" label="Member Name" variant="standard" />
+                        id="standard-basic" label="Member Name" variant="outlined" />
                 </Grid>
-                <Grid item xs={3} style={{ minWidth: 150 }}>
+                <Grid item xs={12} style={{ paddingRight: 10 }} >
                     <TextField value={memData.aadharNumber + ''}
+                        style={{ width: '100%' }}
                         onChange={(e) => changeFamilyDetails(e.target.value, 'aadharNumber')}
-                        id="standard-basic" label="Aadhaar Number" variant="standard" />
+                        id="standard-basic" label="Aadhaar Number" variant="outlined" />
                 </Grid>
-                <Grid item xs={3} style={{ minWidth: 150 }}>
+                <Grid item xs={12} style={{ paddingRight: 10 }} >
                     <TextField value={memData.mobileNumber + ''}
+                        style={{ width: '100%' }}
                         onChange={(e) => changeFamilyDetails(e.target.value, 'mobileNumber')}
-                        id="standard-basic" label="Mobile Number" variant="standard" />
+                        id="standard-basic" label="Mobile Number" variant="outlined" />
                 </Grid>
             </Grid>
 
-            <Grid style={{ padding: 20 }} container spacing={2}>
+            <Grid style={{ marginTop: 10, paddingLeft: 10 }} container spacing={2}>
                 <Grid item xs={3} style={{ minWidth: 150 }}>
                     <TextField value={memData.community + ''}
                         onChange={(e) => changeFamilyDetails(e.target.value, 'community')}
@@ -486,20 +489,20 @@ const MemberPage = ({ memberDetails, closePage }) => {
 
             <Grid style={{ padding: 20 }} container spacing={2}>
                 <Grid item xs={4} style={{ minWidth: 200 }}>
-                        <Typography>
-                            Osteoporosis Scanned ?
-                        </Typography>
-                        <ToggleButtonGroup
-                            color="primary"
-                            value={(memData.isOsteoporosisScan === null || memData.isOsteoporosisScan === "") ? 'N/A' : memData.isOsteoporosisScan}
-                            exclusive
-                            onChange={(e) => changeFamilyDetails(e.target.value, 'isOsteoporosisScan')}
-                            aria-label="Platform"
-                        >
-                            <ToggleButton value="N/A">N/A</ToggleButton>
-                            <ToggleButton value="Y">Y</ToggleButton>
-                            <ToggleButton value="N">N</ToggleButton>
-                        </ToggleButtonGroup>
+                    <Typography>
+                        Osteoporosis Scanned ?
+                    </Typography>
+                    <ToggleButtonGroup
+                        color="primary"
+                        value={(memData.isOsteoporosisScan === null || memData.isOsteoporosisScan === "") ? 'N/A' : memData.isOsteoporosisScan}
+                        exclusive
+                        onChange={(e) => changeFamilyDetails(e.target.value, 'isOsteoporosisScan')}
+                        aria-label="Platform"
+                    >
+                        <ToggleButton value="N/A">N/A</ToggleButton>
+                        <ToggleButton value="Y">Y</ToggleButton>
+                        <ToggleButton value="N">N</ToggleButton>
+                    </ToggleButtonGroup>
                 </Grid>
                 <Grid item xs={4} style={{ minWidth: 250 }}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -508,7 +511,7 @@ const MemberPage = ({ memberDetails, closePage }) => {
                             inputFormat="DD/MM/YYYY"
                             value={memData.osteoporosisScanOne}
                             onChange={(e) => changeFamilyDetails(e, 'osteoporosisScanOne')}
-                            renderInput={(params) => <TextField  style={{ minWidth: 250 }} variant="standard" {...params} />}
+                            renderInput={(params) => <TextField style={{ minWidth: 250 }} variant="standard" {...params} />}
                         />
 
                     </LocalizationProvider>
@@ -529,20 +532,20 @@ const MemberPage = ({ memberDetails, closePage }) => {
 
             <Grid style={{ padding: 20 }} container spacing={2}>
                 <Grid item xs={4} style={{ minWidth: 200 }}>
-                        <Typography>
-                            Is Deceased ?
-                        </Typography>
-                        <ToggleButtonGroup
-                            color="primary"
-                            value={(memData.isDeceased === null || memData.isDeceased === "") ? 'N/A' : memData.isDeceased}
-                            exclusive
-                            onChange={(e) => changeFamilyDetails(e.target.value, 'isDeceased')}
-                            aria-label="Platform"
-                        >
-                            <ToggleButton value="N/A">N/A</ToggleButton>
-                            <ToggleButton value="Y">Y</ToggleButton>
-                            <ToggleButton value="N">N</ToggleButton>
-                        </ToggleButtonGroup>
+                    <Typography>
+                        Is Deceased ?
+                    </Typography>
+                    <ToggleButtonGroup
+                        color="primary"
+                        value={(memData.isDeceased === null || memData.isDeceased === "") ? 'N/A' : memData.isDeceased}
+                        exclusive
+                        onChange={(e) => changeFamilyDetails(e.target.value, 'isDeceased')}
+                        aria-label="Platform"
+                    >
+                        <ToggleButton value="N/A">N/A</ToggleButton>
+                        <ToggleButton value="Y">Y</ToggleButton>
+                        <ToggleButton value="N">N</ToggleButton>
+                    </ToggleButtonGroup>
                 </Grid>
                 <Grid item xs={4} style={{ minWidth: 250 }}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -551,7 +554,7 @@ const MemberPage = ({ memberDetails, closePage }) => {
                             inputFormat="DD/MM/YYYY"
                             value={memData.deceasedDate}
                             onChange={(e) => changeFamilyDetails(e, 'deceasedDate')}
-                            renderInput={(params) => <TextField  style={{ minWidth: 250 }} variant="standard" {...params} />}
+                            renderInput={(params) => <TextField style={{ minWidth: 250 }} variant="standard" {...params} />}
                         />
 
                     </LocalizationProvider>

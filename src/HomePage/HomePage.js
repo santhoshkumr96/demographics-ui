@@ -257,47 +257,59 @@ const HomePage = () => {
 
                     {
                         isSearchEnabled &&
-                        <Grid container spacing={2} style={{ justifyContent: 'right', marginRight: '30px', marginTop: '10px' , marginBottom: '10px'}}>
-                            <TextField style={{marginRight:'10px'}} id="outlined-basic" size="small" label="Family Id" variant="outlined"
-                                value={familyId}
-                                onChange={(e) => setFamilyId(e.target.value)}
-                            />
-                            <TextField style={{marginRight:'10px'}} id="outlined-basic" size="small" label="Respondent Name" variant="outlined"
-                                value={respondentName}
-                                onChange={(e) => setRespondentName(e.target.value)}
-                            />
-                            <TextField style={{marginRight:'10px'}} id="outlined-basic" size="small" label="Mobile Number" variant="outlined"
-                                value={mobileNumber}
-                                onChange={(e) => setMobileNumber(e.target.value)}
-                            />
-                            <TextField style={{marginRight:'10px'}} id="outlined-basic" size="small" label="Village Name" variant="outlined"
-                                value={villageName}
-                                onChange={(e) => setVillageName(e.target.value)}
-                            />
+                        <Grid container spacing={2} style={{marginLeft:'20px' , justifyContent: 'right', marginRight: '30px', marginTop: '10px', marginBottom: '10px' }}>
+                            <Grid xs={12} md={2}>
+                                <TextField style={{ width:'100%', padding:'5px' }} id="outlined-basic" size="small" label="Family Id" variant="outlined"
+                                    value={familyId}
+                                    onChange={(e) => setFamilyId(e.target.value)}
+                                />
+                            </Grid>
+                            <Grid  xs={12} md={2}>
+                                <TextField style={{ width:'100%', padding:'5px' }} id="outlined-basic" size="small" label="Respondent Name" variant="outlined"
+                                    value={respondentName}
+                                    onChange={(e) => setRespondentName(e.target.value)}
+                                />
+                            </Grid>
+                            <Grid  xs={12} md={2}>
+                                <TextField style={{ width:'100%', padding:'5px' }} id="outlined-basic" size="small" label="Mobile Number" variant="outlined"
+                                    value={mobileNumber}
+                                    onChange={(e) => setMobileNumber(e.target.value)}
+                                />
+                            </Grid>
+                            <Grid  xs={12} md={2}>
+                                <TextField style={{ width:'100%', padding:'5px'}} id="outlined-basic" size="small" label="Village Name" variant="outlined"
+                                    value={villageName}
+                                    onChange={(e) => setVillageName(e.target.value)}
+                                />
+                            </Grid>
+                            <Grid  xs={12} md={2}  style={{marginLeft:'20px'}}>
                             <Button
+                            style={{ width:'100%'}}
                                 variant="contained"
                                 onClick={() => clearSearch()}
                             >
                                 Clear
                             </Button>
+                            </Grid>
+
                         </Grid>
                     }
 
 
 
-                    <TableContainer style={{marginLeft:'30px', marginRight:'10px'}}component={Paper}>
+                    <TableContainer style={{ marginLeft: '30px', marginRight: '10px' }} component={Paper}>
                         <Table aria-label="simple table">
                             <TableHead>
-                                <TableRow style={{background:'#FC7300'}}>
-                                    <TableCell  style={{color:'white', minWidth:'100px'}} >S.No</TableCell>
-                                    <TableCell  style={{color:'white', minWidth:'100px'}} >Id</TableCell>
-                                    <TableCell  style={{color:'white', minWidth:'100px'}} >Family Id</TableCell>
-                                    <TableCell  style={{color:'white', minWidth:'100px'}} >Respondent Name</TableCell>
-                                    <TableCell  style={{color:'white', minWidth:'100px'}} >Mobile Number</TableCell>
-                                    <TableCell  style={{color:'white', minWidth:'100px'}} >No Family Members</TableCell>
-                                    <TableCell  style={{color:'white', minWidth:'100px'}} >Village Name</TableCell>
-                                    <TableCell  style={{color:'white', minWidth:'100px'}} >Status</TableCell>
-                                    <TableCell  style={{color:'white', minWidth:'100px'}} >Action</TableCell>
+                                <TableRow style={{ background: '#FC7300' }}>
+                                    <TableCell style={{ color: 'white', minWidth: '100px' }} >S.No</TableCell>
+                                    <TableCell style={{ color: 'white', minWidth: '100px' }} >Id</TableCell>
+                                    <TableCell style={{ color: 'white', minWidth: '100px' }} >Family Id</TableCell>
+                                    <TableCell style={{ color: 'white', minWidth: '100px' }} >Respondent Name</TableCell>
+                                    <TableCell style={{ color: 'white', minWidth: '100px' }} >Mobile Number</TableCell>
+                                    <TableCell style={{ color: 'white', minWidth: '100px' }} >No Family Members</TableCell>
+                                    <TableCell style={{ color: 'white', minWidth: '100px' }} >Village Name</TableCell>
+                                    <TableCell style={{ color: 'white', minWidth: '100px' }} >Status</TableCell>
+                                    <TableCell style={{ color: 'white', minWidth: '100px' }} >Action</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -314,16 +326,16 @@ const HomePage = () => {
                                         <TableCell>{getCountOfMembers(row)}</TableCell>
                                         <TableCell>{row.demographicDetail.villageName}</TableCell>
                                         <TableCell>{'in progress'}</TableCell>
-                                            <TableCell style={{minWidth: 100}}>
-                                                <IconButton   onClick={() => editFamily(row.id)} color="primary">
-                                                    <EditIcon  color="primary"/>
-                                                </IconButton>
-                                                <IconButton onClick={() => deleteFamily(row.familyId, row.id)} style={{ marginLeft: 20 }} color="primary">
-                                                    <DeleteIcon color="error" />
-                                                </IconButton>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
+                                        <TableCell style={{ minWidth: 100 }}>
+                                            <IconButton onClick={() => editFamily(row.id)} color="primary">
+                                                <EditIcon color="primary" />
+                                            </IconButton>
+                                            <IconButton onClick={() => deleteFamily(row.familyId, row.id)} style={{ marginLeft: 20 }} color="primary">
+                                                <DeleteIcon color="error" />
+                                            </IconButton>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
 
                             </TableBody>
                         </Table>

@@ -1,5 +1,5 @@
 
-import { Grid, Typography,Stack, Snackbar, Container,Modal,Box, Alert, Backdrop, CircularProgress, TextField, Button, Autocomplete } from '@mui/material';
+import { Grid, Typography, Stack, Snackbar, Container, Modal, Box, Alert, Backdrop, CircularProgress, TextField, Button, IconButton, Autocomplete } from '@mui/material';
 import { Fragment, useState, useEffect } from 'react';
 import ajax from '../ajaxHelper';
 import { SERVICE_BASE_URL } from '../config';
@@ -13,7 +13,8 @@ import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import MemberPage from './MemberPage';
 import { useNavigate } from 'react-router-dom';
-
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 
 const defaultAreaFilter = {
     panchayat: '',
@@ -51,7 +52,7 @@ const defaultFamilyDetails = {
     "twoWheeler": 0,
     "threeWheeler": 0,
     "fourWheeler": 0,
-    "noOfOtherVechicles": 0,
+    "noOtherVechicles": 0,
     "otherVechiclesDetails": "",
     "livestockDetails": "",
     "hen": 0,
@@ -90,6 +91,14 @@ const FamilyPage = ({ famId }) => {
     const handleCloseModal = () => setOpenModal(false);
     const [deleteMemberDetails, setDeleteMemberDetails] = useState({});
 
+    //accordian
+
+    const [expanded, setExpanded] = useState(false);
+
+    const handleChange = (panel) => (event, isExpanded) => {
+        setExpanded(isExpanded ? panel : false);
+    };
+
     //default page handlers
     const [isError, setisError] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -124,10 +133,10 @@ const FamilyPage = ({ famId }) => {
         setIsLoading(true);
         if (famId === 0) {
             famData.createdBy = loginContext.userId
-        } 
-            
+        }
+
         famData.updatedBy = loginContext.userId
-       
+
         ajax
             .post(`${SERVICE_BASE_URL}/saveFamily`, famData, { config })
             .then((res) => {
@@ -206,7 +215,7 @@ const FamilyPage = ({ famId }) => {
     const deleteMember = (deleteConfig) => {
         const config = {};
         ajax
-            .post(`${SERVICE_BASE_URL}/deleteMember`,deleteConfig, { config })
+            .post(`${SERVICE_BASE_URL}/deleteMember`, deleteConfig, { config })
             .then((res) => {
                 getFamily(famData.id)
                 handleCloseModal();
@@ -342,11 +351,11 @@ const FamilyPage = ({ famId }) => {
             "bloodGroup": 0,
             "educationQualification": 0,
             "annualIncome": 0,
-            "isOsteoporosisScan":"",
-            "osteoporosisScanOne":null,
-            "osteoporosisScanTwo":null,
-            "deceasedDate":null,
-            "isDeceased":""
+            "isOsteoporosisScan": "",
+            "osteoporosisScanOne": null,
+            "osteoporosisScanTwo": null,
+            "deceasedDate": null,
+            "isDeceased": ""
         }
         setMemberData(newMemberData);
     }
@@ -407,7 +416,7 @@ const FamilyPage = ({ famId }) => {
             {!isMemberView &&
                 <Fragment >
 
-                    <Accordion style={{ marginTop: 60 }}>
+                    <Accordion TransitionProps={{ unmountOnExit: true }} expanded={expanded === 'panel1'} onChange={handleChange('panel1')} style={{ marginTop: 60 }}>
                         <AccordionSummary
                             expandIcon={<ExpandMoreIcon />}
                             aria-controls="panel1a-content"
@@ -417,34 +426,39 @@ const FamilyPage = ({ famId }) => {
                         </AccordionSummary>
                         <AccordionDetails>
                             <Grid container spacing={2}>
-                                <Grid item xs={3} style={{ minWidth: 200 }}>
+                                <Grid item xs={12}>
                                     <TextField value={famData.respondentName + ''}
+                                        style={{ width: '100%' }}
                                         onChange={(e) => changeFamilyDetails(e.target.value, 'respondentName')}
-                                        id="standard-basic" label="Respondent Name" variant="standard" />
+                                        id="standard-basic" label="Respondent Name" variant="outlined" />
                                 </Grid>
-                                <Grid item xs={3} style={{ minWidth: 200 }}>
+                                <Grid item xs={12}>
                                     <TextField value={famData.familyId + ''}
+                                        style={{ width: '100%' }}
                                         onChange={(e) => changeFamilyDetails(e.target.value, 'familyId')}
-                                        id="standard-basic" label="Family Id" variant="standard" />
+                                        id="standard-basic" label="Family Id" variant="outlined" />
                                 </Grid>
-                                <Grid item xs={3} style={{ minWidth: 200 }}>
+                                <Grid item xs={12}>
                                     <TextField value={famData.memberDetail === undefined ? '' : (famData.memberDetail.length + '')}
-                                        id="standard-basic" label="Number of members" variant="standard" />
+                                        style={{ width: '100%' }}
+                                        id="standard-basic" label="Number of members" variant="outlined" />
                                 </Grid>
-                                <Grid item xs={3} style={{ minWidth: 200 }}>
+                                <Grid item xs={12}>
                                     <TextField value={famData.mobileNumber + ''}
+                                        style={{ width: '100%' }}
                                         onChange={(e) => changeFamilyDetails(e.target.value, 'mobileNumber')}
-                                        id="standard-basic" label="Mobile No" variant="standard" />
+                                        id="standard-basic" label="Mobile No" variant="outlined" />
                                 </Grid>
-                                <Grid item xs={3} style={{ minWidth: 200 }}>
+                                <Grid item xs={12}>
                                     <TextField value={famData.doorNo + ''}
+                                        style={{ width: '100%' }}
                                         onChange={(e) => changeFamilyDetails(e.target.value, 'doorNo')}
-                                        id="standard-basic" label="Door No" variant="standard" />
+                                        id="standard-basic" label="Door No" variant="outlined" />
                                 </Grid>
                             </Grid>
 
-                            <Grid container spacing={2} >
-                                <Grid item xs={3} style={{ minWidth: 200 }}>
+                            <Grid container spacing={2} style={{ paddingTop: '15px' }} >
+                                <Grid item xs={12}>
                                     <Autocomplete
                                         id="combo-box-demo"
                                         options={areaLabel.panchayat}
@@ -452,10 +466,10 @@ const FamilyPage = ({ famId }) => {
                                             onChangeAutoCompleteArea(newValue, 'panchayat')
                                         }}
                                         value={familyArea.panchayat === undefined ? null : (familyArea.panchayat + '')}
-                                        renderInput={(params) => <TextField {...params} variant="standard" label="Panchayat" />}
+                                        renderInput={(params) => <TextField {...params} variant="outlined" label="Panchayat" />}
                                     />
                                 </Grid>
-                                <Grid item xs={3} style={{ minWidth: 200 }}>
+                                <Grid item xs={12}>
                                     <Autocomplete
                                         id="combo-box-demo"
                                         options={areaLabel.areaCode}
@@ -463,10 +477,10 @@ const FamilyPage = ({ famId }) => {
                                             onChangeAutoCompleteArea(newValue, 'areaCode')
                                         }}
                                         value={familyArea.areaCode === undefined ? null : (familyArea.areaCode + '')}
-                                        renderInput={(params) => <TextField {...params} variant="standard" label="Area Code" />}
+                                        renderInput={(params) => <TextField {...params} variant="outlined" label="Area Code" />}
                                     />
                                 </Grid>
-                                <Grid item xs={3} style={{ minWidth: 200 }}>
+                                <Grid item xs={12}>
                                     <Autocomplete
                                         id="combo-box-demo"
                                         options={areaLabel.villageName}
@@ -475,10 +489,10 @@ const FamilyPage = ({ famId }) => {
 
                                         }}
                                         value={familyArea.villageName === undefined ? null : (familyArea.villageName + '')}
-                                        renderInput={(params) => <TextField {...params} variant="standard" label="Village Name" />}
+                                        renderInput={(params) => <TextField {...params} variant="outlined" label="Village Name" />}
                                     />
                                 </Grid>
-                                <Grid item xs={3} style={{ minWidth: 200 }}>
+                                <Grid item xs={12}>
                                     <Autocomplete
                                         id="combo-box-demo"
                                         options={areaLabel.streetName}
@@ -486,21 +500,25 @@ const FamilyPage = ({ famId }) => {
                                             onChangeAutoCompleteArea(newValue, 'streetName')
                                         }}
                                         value={familyArea.streetName === undefined ? null : (familyArea.streetName + '')}
-                                        renderInput={(params) => <TextField {...params} variant="standard" label="Street Name" />}
+                                        renderInput={(params) => <TextField {...params} variant="outlined" label="Street Name" />}
                                     />
                                 </Grid>
                             </Grid>
 
-                            <Button
-                                style={{ marginTop: 20, marginLeft: 20 }}
-                                variant="contained"
-                                onClick={() => saveFamDetails()}
-                            >
-                                Save
-                            </Button>
+                            <Grid item xs={12} style={{ paddingTop: '15px' }}>
+                                <Button
+                                    style={{ width: '100%' }}
+                                    variant="contained"
+                                    onClick={() => saveFamDetails()}
+                                >
+                                    Save
+                                </Button>
+                            </Grid>
+
+
                         </AccordionDetails>
                     </Accordion>
-                    <Accordion>
+                    <Accordion TransitionProps={{ unmountOnExit: true }} expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
                         <AccordionSummary
                             expandIcon={<ExpandMoreIcon />}
                             aria-controls="panel2a-content"
@@ -510,24 +528,29 @@ const FamilyPage = ({ famId }) => {
                         </AccordionSummary>
                         <AccordionDetails>
 
-                            <Grid container >
-                                <Grid item xs={4} style={{ minWidth: 200 }}>
-                                    <Typography>
-                                        Toilet Facility At Home
-                                    </Typography>
-                                    <ToggleButtonGroup
-                                        color="primary"
-                                        value={(famData.toiletFacilityAtHome === null || famData.toiletFacilityAtHome === "") ? 'N/A' : famData.toiletFacilityAtHome}
-                                        exclusive
-                                        onChange={(e) => changeFamilyDetails(e.target.value, 'toiletFacilityAtHome')}
-                                        aria-label="Platform"
-                                    >
-                                        <ToggleButton value="N/A">N/A</ToggleButton>
-                                        <ToggleButton value="Y">Y</ToggleButton>
-                                        <ToggleButton value="N">N</ToggleButton>
-                                    </ToggleButtonGroup>
+                            <Grid container spacing={2}>
+                                <Grid container xs={12}>
+                                    <Grid item xs={5} style={{ marginLeft: '15px' }}>
+                                        <Typography>
+                                            Toilet Facility At Home
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <ToggleButtonGroup
+                                            style={{ float: 'right' }}
+                                            color="primary"
+                                            value={(famData.toiletFacilityAtHome === null || famData.toiletFacilityAtHome === "") ? 'N/A' : famData.toiletFacilityAtHome}
+                                            exclusive
+                                            onChange={(e) => changeFamilyDetails(e.target.value, 'toiletFacilityAtHome')}
+                                            aria-label="Platform"
+                                        >
+                                            <ToggleButton value="N/A">N/A</ToggleButton>
+                                            <ToggleButton value="Y">Y</ToggleButton>
+                                            <ToggleButton value="N">N</ToggleButton>
+                                        </ToggleButtonGroup>
+                                    </Grid>
                                 </Grid>
-                                <Grid item xs={4} style={{ minWidth: 200 }}>
+                                <Grid item xs={12}>
                                     <Autocomplete
                                         id="combo-box-demo"
                                         options={statusOfHouseData.map((e) => {
@@ -539,10 +562,10 @@ const FamilyPage = ({ famId }) => {
                                             onChangeLabel(newValue, 'statusOfHouseDetails', 'statusOfHouse');
                                         }}
                                         value={famData.statusOfHouseDetails === undefined ? null : (famData.statusOfHouseDetails.type + '')}
-                                        renderInput={(params) => <TextField {...params} variant="standard" label="Type Of House" />}
+                                        renderInput={(params) => <TextField {...params} variant="outlined" label="Status Of House" />}
                                     />
                                 </Grid>
-                                <Grid item xs={4} style={{ minWidth: 200 }}>
+                                <Grid item xs={12}>
                                     <Autocomplete
                                         id="combo-box-demo"
                                         options={typeOfHouseData.map((e) => {
@@ -554,162 +577,213 @@ const FamilyPage = ({ famId }) => {
                                             onChangeLabel(newValue, 'typeOfHouseDetails', 'typeOfHouse');
                                         }}
                                         value={famData.typeOfHouseDetails === undefined ? null : (famData.typeOfHouseDetails.type + '')}
-                                        renderInput={(params) => <TextField {...params} variant="standard" label="Type Of House" />}
+                                        renderInput={(params) => <TextField {...params} variant="outlined" label="Type Of House" />}
                                     />
                                 </Grid>
                             </Grid>
 
-                            <Grid container spacing={2}>
-                                <Grid item xs={3} style={{ minWidth: 200 }}>
+                            <Grid container spacing={2} style={{ paddingTop: '15px' }}>
+                                <Grid item xs={12}>
                                     <TextField value={famData.wetLandInAcres + ''}
+                                        style={{ width: '100%' }}
                                         onChange={(e) => changeFamilyDetails(e.target.value, 'wetLandInAcres')}
-                                        id="standard-basic" label="Wet Land In Acres" variant="standard" />
+                                        id="standard-basic" label="Wet Land In Acres" variant="outlined" />
                                 </Grid>
-                                <Grid item xs={3} style={{ minWidth: 200 }}>
+                                <Grid item xs={12}>
                                     <TextField value={famData.dryLandInAcres + ''}
+                                        style={{ width: '100%' }}
                                         onChange={(e) => changeFamilyDetails(e.target.value, 'dryLandInAcres')}
-                                        id="standard-basic" label="Dry Land In Acres" variant="standard" />
+                                        id="standard-basic" label="Dry Land In Acres" variant="outlined" />
                                 </Grid>
                             </Grid>
 
-                            <Grid container >
-                                <Grid item xs={4} style={{ minWidth: 200 }}>
-                                    <Typography>
-                                        Motor Vechicles
-                                    </Typography>
-                                    <ToggleButtonGroup
-                                        color="primary"
-                                        value={(famData.motorVechicles === null || famData.motorVechicles === "") ? 'N/A' : famData.motorVechicles}
-                                        exclusive
-                                        onChange={(e) => changeFamilyDetails(e.target.value, 'motorVechicles')}
-                                        aria-label="Platform"
-                                    >
-                                        <ToggleButton value="N/A">N/A</ToggleButton>
-                                        <ToggleButton value="Y">Y</ToggleButton>
-                                        <ToggleButton value="N">N</ToggleButton>
-                                    </ToggleButtonGroup>
+                            <Grid container spacing={2} style={{ paddingTop: '30px' }}>
+                                <Grid container xs={12}>
+                                    <Grid item xs={5} style={{ marginLeft: '15px' }}>
+                                        <Typography>
+                                            Motor Vechicles
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <ToggleButtonGroup
+                                            style={{ float: 'right' }}
+                                            color="primary"
+                                            value={(famData.motorVechicles === null || famData.motorVechicles === "") ? 'N/A' : famData.motorVechicles}
+                                            exclusive
+                                            onChange={(e) => changeFamilyDetails(e.target.value, 'motorVechicles')}
+                                            aria-label="Platform"
+                                        >
+                                            <ToggleButton value="N/A">N/A</ToggleButton>
+                                            <ToggleButton value="Y">Y</ToggleButton>
+                                            <ToggleButton value="N">N</ToggleButton>
+                                        </ToggleButtonGroup>
+                                    </Grid>
                                 </Grid>
-                                <Grid item xs={3} style={{ minWidth: 200 }}>
-                                    <TextField value={famData.oneWheeler + ''}
-                                        onChange={(e) => changeFamilyDetails(e.target.value, 'oneWheeler')}
-                                        id="standard-basic" label="One Wheeler" variant="standard" />
-                                </Grid>
-                                <Grid item xs={3} style={{ minWidth: 200 }}>
-                                    <TextField value={famData.twoWheeler + ''}
-                                        onChange={(e) => changeFamilyDetails(e.target.value, 'twoWheeler')}
-                                        id="standard-basic" label="Two Wheeler" variant="standard" />
-                                </Grid>
-                                <Grid item xs={3} style={{ minWidth: 200 }}>
-                                    <TextField value={famData.threeWheeler + ''}
-                                        onChange={(e) => changeFamilyDetails(e.target.value, 'threeWheeler')}
-                                        id="standard-basic" label="Three Wheeler" variant="standard" />
-                                </Grid>
-                                <Grid item xs={3} style={{ minWidth: 200 }}>
-                                    <TextField value={famData.fourWheeler + ''}
-                                        onChange={(e) => changeFamilyDetails(e.target.value, 'fourWheeler')}
-                                        id="standard-basic" label="Four Wheeler" variant="standard" />
-                                </Grid>
-                                <Grid item xs={4} style={{ minWidth: 200 }}>
-                                    <Typography>
-                                        Other Vechicles
-                                    </Typography>
-                                    <ToggleButtonGroup
-                                        color="primary"
-                                        value={(famData.otherVechiclesDetails === null || famData.otherVechiclesDetails === "") ? 'N/A' : famData.otherVechiclesDetails}
-                                        exclusive
-                                        onChange={(e) => changeFamilyDetails(e.target.value, 'otherVechiclesDetails')}
-                                        aria-label="Platform"
-                                    >
-                                        <ToggleButton value="N/A">N/A</ToggleButton>
-                                        <ToggleButton value="Y">Y</ToggleButton>
-                                        <ToggleButton value="N">N</ToggleButton>
-                                    </ToggleButtonGroup>
-                                </Grid>
-                                <Grid item xs={3} style={{ minWidth: 200 }}>
-                                    <TextField value={famData.noOtherVechicles + ''}
-                                        onChange={(e) => changeFamilyDetails(e.target.value, 'noOtherVechicles')}
-                                        id="standard-basic" label="No Of Other Vechicles" variant="standard" />
-                                </Grid>
+                                {
+                                    famData.motorVechicles === "Y" &&
+                                    <Fragment>
+                                        <Grid item xs={12}>
+                                            <TextField value={famData.oneWheeler + ''}
+                                                style={{ width: '100%' }}
+                                                onChange={(e) => changeFamilyDetails(e.target.value, 'oneWheeler')}
+                                                id="standard-basic" label="One Wheeler" variant="outlined" />
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <TextField value={famData.twoWheeler + ''}
+                                                style={{ width: '100%' }}
+                                                onChange={(e) => changeFamilyDetails(e.target.value, 'twoWheeler')}
+                                                id="standard-basic" label="Two Wheeler" variant="outlined" />
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <TextField value={famData.threeWheeler + ''}
+                                                style={{ width: '100%' }}
+                                                onChange={(e) => changeFamilyDetails(e.target.value, 'threeWheeler')}
+                                                id="standard-basic" label="Three Wheeler" variant="outlined" />
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <TextField value={famData.fourWheeler + ''}
+                                                style={{ width: '100%' }}
+                                                onChange={(e) => changeFamilyDetails(e.target.value, 'fourWheeler')}
+                                                id="standard-basic" label="Four Wheeler" variant="outlined" />
+                                        </Grid>
+                                        <Grid container xs={12} style={{ paddingTop: '20px' }}>
+                                            <Grid item xs={5} style={{ marginLeft: '15px' }}>
+                                                <Typography>
+                                                    Other Vechicles
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item xs={6}>
+                                                <ToggleButtonGroup
+                                                    style={{ float: 'right' }}
+                                                    color="primary"
+                                                    value={(famData.otherVechiclesDetails === null || famData.otherVechiclesDetails === "") ? 'N/A' : famData.otherVechiclesDetails}
+                                                    exclusive
+                                                    onChange={(e) => changeFamilyDetails(e.target.value, 'otherVechiclesDetails')}
+                                                    aria-label="Platform"
+                                                >
+                                                    <ToggleButton value="N/A">N/A</ToggleButton>
+                                                    <ToggleButton value="Y">Y</ToggleButton>
+                                                    <ToggleButton value="N">N</ToggleButton>
+                                                </ToggleButtonGroup>
+                                            </Grid>
+                                        </Grid>
+                                        {
+                                            famData.otherVechiclesDetails === "Y" &&
+                                            <Grid item xs={12}>
+                                                <TextField value={famData.noOtherVechicles + ''}
+                                                    style={{ width: '100%' }}
+                                                    onChange={(e) => changeFamilyDetails(e.target.value, 'noOtherVechicles')}
+                                                    id="standard-basic" label="No Of Other Vechicles" variant="outlined" />
+                                            </Grid>
+                                        }
+                                    </Fragment>
+                                }
                             </Grid>
 
-                            <Grid container >
-                                <Grid item xs={4} style={{ minWidth: 200 }}>
-                                    <Typography>
-                                        Livestock Details
-                                    </Typography>
-                                    <ToggleButtonGroup
-                                        color="primary"
-                                        value={(famData.livestockDetails === null || famData.livestockDetails === "") ? 'N/A' : famData.livestockDetails}
-                                        exclusive
-                                        onChange={(e) => changeFamilyDetails(e.target.value, 'livestockDetails')}
-                                        aria-label="Platform"
-                                    >
-                                        <ToggleButton value="N/A">N/A</ToggleButton>
-                                        <ToggleButton value="Y">Y</ToggleButton>
-                                        <ToggleButton value="N">N</ToggleButton>
-                                    </ToggleButtonGroup>
+                            <Grid container spacing={2} style={{ paddingTop: '15px' }}>
+                                <Grid container xs={12} style={{ paddingTop: '20px' }}>
+                                    <Grid item xs={5} style={{ marginLeft: '15px' }}>
+                                        <Typography>
+                                            Livestock Details
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <ToggleButtonGroup
+                                            style={{ float: 'right' }}
+                                            color="primary"
+                                            value={(famData.livestockDetails === null || famData.livestockDetails === "") ? 'N/A' : famData.livestockDetails}
+                                            exclusive
+                                            onChange={(e) => changeFamilyDetails(e.target.value, 'livestockDetails')}
+                                            aria-label="Platform"
+                                        >
+                                            <ToggleButton value="N/A">N/A</ToggleButton>
+                                            <ToggleButton value="Y">Y</ToggleButton>
+                                            <ToggleButton value="N">N</ToggleButton>
+                                        </ToggleButtonGroup>
+                                    </Grid>
                                 </Grid>
-                                <Grid item xs={3} style={{ minWidth: 200 }}>
-                                    <TextField value={famData.hen + ''}
-                                        onChange={(e) => changeFamilyDetails(e.target.value, 'hen')}
-                                        id="standard-basic" label="Hen" variant="standard" />
-                                </Grid>
-                                <Grid item xs={3} style={{ minWidth: 200 }}>
-                                    <TextField value={famData.cow + ''}
-                                        onChange={(e) => changeFamilyDetails(e.target.value, 'cow')}
-                                        id="standard-basic" label="Cow" variant="standard" />
-                                </Grid>
-                                <Grid item xs={3} style={{ minWidth: 200 }}>
-                                    <TextField value={famData.pig + ''}
-                                        onChange={(e) => changeFamilyDetails(e.target.value, 'pig')}
-                                        id="standard-basic" label="Pig" variant="standard" />
-                                </Grid>
-                                <Grid item xs={3} style={{ minWidth: 200 }}>
-                                    <TextField value={famData.buffalo + ''}
-                                        onChange={(e) => changeFamilyDetails(e.target.value, 'buffalo')}
-                                        id="standard-basic" label="Buffalo" variant="standard" />
-                                </Grid>
-                                <Grid item xs={3} style={{ minWidth: 200 }}>
-                                    <TextField value={famData.goat + ''}
-                                        onChange={(e) => changeFamilyDetails(e.target.value, 'goat')}
-                                        id="standard-basic" label="Goat" variant="standard" />
-                                </Grid>
-                                <Grid item xs={4} style={{ minWidth: 200 }}>
-                                    <Typography>
-                                        Other Livestock Details
-                                    </Typography>
-                                    <ToggleButtonGroup
-                                        color="primary"
-                                        value={(famData.otherLivestockDetails === null || famData.otherLivestockDetails === "") ? 'N/A' : famData.otherLivestockDetails}
-                                        exclusive
-                                        onChange={(e) => changeFamilyDetails(e.target.value, 'otherLivestockDetails')}
-                                        aria-label="Platform"
-                                    >
-                                        <ToggleButton value="N/A">N/A</ToggleButton>
-                                        <ToggleButton value="Y">Y</ToggleButton>
-                                        <ToggleButton value="N">N</ToggleButton>
-                                    </ToggleButtonGroup>
-                                </Grid>
-                                <Grid item xs={3} style={{ minWidth: 200 }}>
-                                    <TextField value={famData.noOtherLivestock + ''}
-                                        onChange={(e) => changeFamilyDetails(e.target.value, 'noOtherLivestock')}
-                                        id="standard-basic" label="No Of Other LiveStocks" variant="standard" />
-                                </Grid>
+                                {
+                                    famData.livestockDetails === "Y" &&
+                                    <Fragment>
+                                        <Grid item xs={12}>
+                                            <TextField value={famData.hen + ''}
+                                                style={{ width: '100%' }}
+                                                onChange={(e) => changeFamilyDetails(e.target.value, 'hen')}
+                                                id="standard-basic" label="Hen" variant="outlined" />
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <TextField value={famData.cow + ''}
+                                                style={{ width: '100%' }}
+                                                onChange={(e) => changeFamilyDetails(e.target.value, 'cow')}
+                                                id="standard-basic" label="Cow" variant="outlined" />
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <TextField value={famData.pig + ''}
+                                                style={{ width: '100%' }}
+                                                onChange={(e) => changeFamilyDetails(e.target.value, 'pig')}
+                                                id="standard-basic" label="Pig" variant="outlined" />
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <TextField value={famData.buffalo + ''}
+                                                style={{ width: '100%' }}
+                                                onChange={(e) => changeFamilyDetails(e.target.value, 'buffalo')}
+                                                id="standard-basic" label="Buffalo" variant="outlined" />
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <TextField value={famData.goat + ''}
+                                                style={{ width: '100%' }}
+                                                onChange={(e) => changeFamilyDetails(e.target.value, 'goat')}
+                                                id="standard-basic" label="Goat" variant="outlined" />
+                                        </Grid>
+                                        <Grid container xs={12} style={{ paddingTop: '20px' }}>
+                                            <Grid item xs={5} style={{ marginLeft: '15px' }}>
+                                                <Typography>
+                                                    Other Livestock Details
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item xs={6}>
+                                                <ToggleButtonGroup
+                                                    style={{ float: 'right' }}
+                                                    color="primary"
+                                                    value={(famData.otherLivestockDetails === null || famData.otherLivestockDetails === "") ? 'N/A' : famData.otherLivestockDetails}
+                                                    exclusive
+                                                    onChange={(e) => changeFamilyDetails(e.target.value, 'otherLivestockDetails')}
+                                                    aria-label="Platform"
+                                                >
+                                                    <ToggleButton value="N/A">N/A</ToggleButton>
+                                                    <ToggleButton value="Y">Y</ToggleButton>
+                                                    <ToggleButton value="N">N</ToggleButton>
+                                                </ToggleButtonGroup>
+                                            </Grid>
+                                        </Grid>
+                                        {
+                                            famData.otherLivestockDetails === "Y" &&
+                                            <Grid item xs={12}>
+                                                <TextField value={famData.noOtherLivestock + ''}
+                                                    style={{ width: '100%' }}
+                                                    onChange={(e) => changeFamilyDetails(e.target.value, 'noOtherLivestock')}
+                                                    id="standard-basic" label="No Of Other LiveStocks" variant="outlined" />
+                                            </Grid>
+                                        }
+                                    </Fragment>
+                                }
                             </Grid>
 
-                            <Button
-                                style={{ marginTop: 20, marginLeft: 20 }}
-                                variant="contained"
-                                onClick={() => saveFamDetails()}
-                            >
-                                Save
-                            </Button>
+                            <Grid item xs={12} style={{ paddingTop: '15px' }}>
+                                <Button
+                                    style={{ width: '100%' }}
+                                    variant="contained"
+                                    onClick={() => saveFamDetails()}
+                                >
+                                    Save
+                                </Button>
+                            </Grid>
 
                         </AccordionDetails>
                     </Accordion>
 
 
-                    <Accordion>
+                    <Accordion TransitionProps={{ unmountOnExit: true }} expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
                         <AccordionSummary
                             expandIcon={<ExpandMoreIcon />}
                             aria-controls="panel2a-content"
@@ -718,27 +792,37 @@ const FamilyPage = ({ famId }) => {
                             <Typography>Member Details</Typography>
                         </AccordionSummary>
                         <AccordionDetails>
-                            <Grid container>
+                            <Grid container >
                                 {
                                     famData.memberDetail !== undefined && famData.memberDetail.map((row, index) => {
                                         if (row.isDeleted === 'N') {
-                                            return <Grid item xs={6} style={{ minWidth: 250, padding: 20 }}>
-                                                <Typography onClick={() => onFamMemberClick(row)}>
-                                                    {row.memberName}
-                                                </Typography>
-                                                <Button variant="contained" onClick={() => deleteMemberDetailsOnDelete(row.familyIdRef, row.id, loginContext.userId)}>
-                                                    delete
-                                                </Button>
+                                            return <Grid container xs={12} >
+                                                <Grid item xs={7}>
+                                                    <Typography style={{overflowWrap:'break-word'}}>
+                                                        {row.memberName}
+                                                    </Typography>
+
+                                                </Grid>
+                                                <Grid item xs={2}>
+                                                    <IconButton onClick={() => onFamMemberClick(row)} color="primary">
+                                                        <EditIcon color="primary" />
+                                                    </IconButton>
+                                                </Grid>
+                                                <Grid item xs={2}>
+                                                    <IconButton onClick={() => deleteMemberDetailsOnDelete(row.familyIdRef, row.id, loginContext.userId)} style={{ marginLeft: 20 }} color="primary">
+                                                        <DeleteIcon color="error" />
+                                                    </IconButton>
+                                                </Grid>
                                             </Grid>
                                         }
                                     })
                                 }
-                                <Grid item xs={6} style={{ minWidth: 250, padding: 20 }}>
+
+                                <Grid item xs={12} style={{ margin: '10px' }} >
                                     <Button
-                                        style={{ marginTop: 20, marginLeft: 20 }}
+                                        style={{ width: '100%' }}
                                         variant="contained"
-                                        onClick={() => addNewMember()}
-                                    >
+                                        onClick={() => addNewMember()}>
                                         Add Member
                                     </Button>
                                 </Grid>
@@ -748,10 +832,14 @@ const FamilyPage = ({ famId }) => {
                     </Accordion>
 
 
-                    <Button onClick={() => navigate(-2)}>
-                        back
-                    </Button>
-
+                    <Grid item xs={12} style={{ margin: '10px' }} >
+                        <Button
+                            style={{ width: '100%' }}
+                            variant="outlined"
+                            onClick={() => navigate(-2)}>
+                            back
+                        </Button>
+                    </Grid>
 
                     <Modal
                         open={openModal}
@@ -800,7 +888,7 @@ const FamilyPage = ({ famId }) => {
                 isMemberView &&
                 <MemberPage memberDetails={memberData} closePage={closeMemberPage} />
             }
-        </Fragment>
+        </Fragment >
     );
 }
 
