@@ -15,7 +15,10 @@ import MemberPage from './MemberPage';
 import { useNavigate } from 'react-router-dom';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-
+import CameraAltIcon from '@mui/icons-material/CameraAlt';
+import camera from './../camera.js'
+import { LocalConvenienceStoreOutlined } from '@mui/icons-material';
+import axios, * as others from 'axios';
 const defaultAreaFilter = {
     panchayat: '',
     areaCode: '',
@@ -28,7 +31,7 @@ const style = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 400,
+    width: 200,
     bgcolor: 'background.paper',
     border: '1px solid #000',
     boxShadow: 24,
@@ -68,6 +71,20 @@ const defaultFamilyDetails = {
     "updatedBy": 0
 }
 
+const defaultAreaLabel = {
+    panchayat: [],
+    areaCode: [],
+    villageName: [],
+    streetName: []
+}
+
+const defaultfamilyArea = {
+    panchayat: '',
+    areaCode: '',
+    villageName: '',
+    streetName: ''
+}
+
 const FamilyPage = ({ famId }) => {
     const navigate = useNavigate();
 
@@ -75,12 +92,13 @@ const FamilyPage = ({ famId }) => {
     const loginContext = useContext(LoginContext);
     const [famData, setFamData] = useState(defaultFamilyDetails)
     const [areaData, setAreaData] = useState([])
-    const [familyArea, setFamilyArea] = useState({});
-    const [areaLabel, setAreaLabel] = useState({});
+    const [familyArea, setFamilyArea] = useState(defaultfamilyArea);
+    const [areaLabel, setAreaLabel] = useState(defaultAreaLabel);
     const [areaFilter, setAreaFilter] = useState(defaultAreaFilter);
     // const [areaFilteredData, setAreaFilteredData] = useState([]);
     const [inputValue, setInputValue] = useState('');
     const [isMemberView, setIsMemberView] = useState(false);
+    const [isMemberViewAccordian, setIsMemberViewAccordian] = useState(famId===0?false:true);
     const [memberData, setMemberData] = useState({})
 
     const [typeOfHouseData, setTypeOfHouseData] = useState([]);
@@ -114,10 +132,12 @@ const FamilyPage = ({ famId }) => {
         ajax
             .post(`${SERVICE_BASE_URL}/getFamilyDetail?id=` + id, {}, { config })
             .then((res) => {
-                setIsLoading(false);
+               
                 setFamData(res.data);
                 // console.log(res.data);
                 setFamilyArea(res.data.demographicDetail)
+                // console.log(res.data);
+                setIsLoading(false);
             })
             .catch((e) => {
                 setIsLoading(false);
@@ -142,6 +162,7 @@ const FamilyPage = ({ famId }) => {
             .then((res) => {
                 // console.log(res.data)
                 getFamily(res.data);
+                setIsMemberViewAccordian(true);
             })
             .catch((e) => {
                 setIsLoading(false);
@@ -158,10 +179,10 @@ const FamilyPage = ({ famId }) => {
         ajax
             .get(`${SERVICE_BASE_URL}/getAreaDetails`, { config })
             .then((res) => {
-                setIsLoading(false);
                 setAreaData(res.data);
                 // setAreaFilteredData(res.data);
                 genAreaLables(res.data);
+                // setIsLoading(false);
             })
             .catch((e) => {
                 setIsLoading(false);
@@ -178,10 +199,11 @@ const FamilyPage = ({ famId }) => {
         ajax
             .get(`${SERVICE_BASE_URL}/getTypeOfHouseDetails`, { config })
             .then((res) => {
-                setIsLoading(false);
+               
                 setTypeOfHouseData(res.data);
                 // console.log(res.data)
                 // genAreaLables(res.data);
+                setIsLoading(false);
             })
             .catch((e) => {
                 setIsLoading(false);
@@ -198,10 +220,11 @@ const FamilyPage = ({ famId }) => {
         ajax
             .get(`${SERVICE_BASE_URL}/getStatusOfHouseDetails`, { config })
             .then((res) => {
-                setIsLoading(false);
+                
                 setStatusOfHouseData(res.data)
                 // console.log(res.data)
                 // genAreaLables(res.data);
+                setIsLoading(false);
             })
             .catch((e) => {
                 setIsLoading(false);
@@ -318,7 +341,7 @@ const FamilyPage = ({ famId }) => {
             "email": "",
             "physicallyChallenged": "",
             "physicallyChallengedDetails": "",
-            "occupation": "",
+            "occupation": 0,
             "smartphone": "",
             "govtInsurance": "",
             "privateInsurance": "",
@@ -344,8 +367,7 @@ const FamilyPage = ({ famId }) => {
             "asthma": "",
             "jointPain": "",
             "otherDiseases": "",
-            "community": "",
-            "caste": "",
+            "community": 0,
             "relationship": 0,
             "maritalStatus": 0,
             "bloodGroup": 0,
@@ -355,7 +377,9 @@ const FamilyPage = ({ famId }) => {
             "osteoporosisScanOne": null,
             "osteoporosisScanTwo": null,
             "deceasedDate": null,
-            "isDeceased": ""
+            "isDeceased": "",
+            "imageLocation": "",
+            "uterusCancerScan": null
         }
         setMemberData(newMemberData);
     }
@@ -372,6 +396,38 @@ const FamilyPage = ({ famId }) => {
         temp[key] = data;
         temp[idKey] = data.id;
         setFamData(temp);
+    }
+
+    const saveImage = (row, e) => {
+        const config = {
+            headers: {
+                "content-type": "multipart/form-data"
+            }
+        };
+        let form = new FormData();
+        form.append('image', e.target.files['0'], e.target.files['0'].name)
+        setIsLoading(true);
+        const ajaxUPload = axios.create({
+            withCredentials: true,
+            crossDomain: true,
+            baseURL: `${SERVICE_BASE_URL}`,
+            headers: {
+                "content-type": "multipart/form-data"
+            },
+        });
+        ajaxUPload
+            .post(`${SERVICE_BASE_URL}/upload?memId=` + row.id, form, { config })
+            .then((res) => {
+                setIsLoading(false);
+                getFamily(famData.id)
+            })
+            .catch((e) => {
+                setIsLoading(false);
+                setisError(true);
+                seterrorMessage(e.response.data.message);
+                console.log(e)
+            }
+            );
     }
 
     useEffect(() => {
@@ -528,7 +584,7 @@ const FamilyPage = ({ famId }) => {
                         </AccordionSummary>
                         <AccordionDetails>
 
-                            <Grid container spacing={2}>
+                            <Grid container spacing={2} style={{ marginTop: '5px' }}>
                                 <Grid container xs={12}>
                                     <Grid item xs={5} style={{ marginLeft: '15px' }}>
                                         <Typography>
@@ -783,53 +839,72 @@ const FamilyPage = ({ famId }) => {
                     </Accordion>
 
 
-                    <Accordion TransitionProps={{ unmountOnExit: true }} expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
-                        <AccordionSummary
-                            expandIcon={<ExpandMoreIcon />}
-                            aria-controls="panel2a-content"
-                            id="panel2a-header"
-                        >
-                            <Typography>Member Details</Typography>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            <Grid container >
-                                {
-                                    famData.memberDetail !== undefined && famData.memberDetail.map((row, index) => {
-                                        if (row.isDeleted === 'N') {
-                                            return <Grid container xs={12} >
-                                                <Grid item xs={7}>
-                                                    <Typography style={{overflowWrap:'break-word'}}>
-                                                        {row.memberName}
-                                                    </Typography>
+                    {
+                        isMemberViewAccordian &&
+                        <Accordion TransitionProps={{ unmountOnExit: true }} expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
+                            <AccordionSummary
+                                expandIcon={<ExpandMoreIcon />}
+                                aria-controls="panel2a-content"
+                                id="panel2a-header"
+                            >
+                                <Typography>Member Details</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <Grid container >
+                                    {
+                                        famData.memberDetail !== undefined && famData.memberDetail.map((row, index) => {
+                                            if (row.isDeleted === 'N') {
+                                                return <Grid container xs={12} style={{ paddingTop: 20 }}>
+                                                    <Grid container xs={8}>
+                                                        <Grid item xs={12}>
+                                                            <Typography style={{ overflowWrap: 'break-word' }}>
+                                                                {row.memberName}
+                                                            </Typography>
+                                                        </Grid>
+                                                    </Grid>
+                                                    <Grid item xs={1}>
+                                                        <IconButton onClick={() => onFamMemberClick(row)} color="primary">
+                                                            <EditIcon color="primary" />
+                                                        </IconButton>
+                                                    </Grid>
+                                                    <Grid item xs={1}>
+                                                        <Button
+                                                            // variant="outlined"
+                                                            component="label"
+                                                        >
+                                                            <CameraAltIcon />
+                                                            <input
+                                                                type="file"
+                                                                hidden
+                                                                accept="image/jpeg"
+                                                                onChange={(e) => saveImage(row, e)}
+                                                            />
+                                                        </Button>
+                                                    </Grid>
 
+                                                    <Grid item xs={1}>
+                                                        <IconButton onClick={() => deleteMemberDetailsOnDelete(row.familyIdRef, row.id, loginContext.userId)} style={{ marginLeft: 20 }} color="primary">
+                                                            <DeleteIcon color="error" />
+                                                        </IconButton>
+                                                    </Grid>
                                                 </Grid>
-                                                <Grid item xs={2}>
-                                                    <IconButton onClick={() => onFamMemberClick(row)} color="primary">
-                                                        <EditIcon color="primary" />
-                                                    </IconButton>
-                                                </Grid>
-                                                <Grid item xs={2}>
-                                                    <IconButton onClick={() => deleteMemberDetailsOnDelete(row.familyIdRef, row.id, loginContext.userId)} style={{ marginLeft: 20 }} color="primary">
-                                                        <DeleteIcon color="error" />
-                                                    </IconButton>
-                                                </Grid>
-                                            </Grid>
-                                        }
-                                    })
-                                }
+                                            }
+                                        })
+                                    }
 
-                                <Grid item xs={12} style={{ margin: '10px' }} >
-                                    <Button
-                                        style={{ width: '100%' }}
-                                        variant="contained"
-                                        onClick={() => addNewMember()}>
-                                        Add Member
-                                    </Button>
+                                    <Grid item xs={12} style={{ margin: '10px' }} >
+                                        <Button
+                                            style={{ width: '100%' }}
+                                            variant="contained"
+                                            onClick={() => addNewMember()}>
+                                            Add Member
+                                        </Button>
+                                    </Grid>
+
                                 </Grid>
-
-                            </Grid>
-                        </AccordionDetails>
-                    </Accordion>
+                            </AccordionDetails>
+                        </Accordion>
+                    }
 
 
                     <Grid item xs={12} style={{ margin: '10px' }} >

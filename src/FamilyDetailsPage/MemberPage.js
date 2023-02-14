@@ -1,5 +1,5 @@
 import { Typography, Button, Grid, TextField, Autocomplete, Snackbar, ToggleButtonGroup, ToggleButton, Alert, CircularProgress, Backdrop } from "@mui/material";
-import { Fragment, useEffect, useState, useContext } from "react";
+import { Fragment, useEffect, useState, useContext,useCallback } from "react";
 import ajax from "../ajaxHelper";
 import { SERVICE_BASE_URL } from "../config";
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
@@ -7,6 +7,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import moment from 'moment'
 import LoginContext from '../LoginAuthProvider/LoginContext';
+import HideImageIcon from '@mui/icons-material/HideImage';
 
 const MemberPage = ({ memberDetails, closePage }) => {
 
@@ -25,12 +26,17 @@ const MemberPage = ({ memberDetails, closePage }) => {
         closePage();
     }
     const loginContext = useContext(LoginContext)
+    const [communityData, setCommunityData] = useState([]);
     const [genderData, setGenderData] = useState([]);
     const [releationshipData, setReleationshipData] = useState([]);
     const [annualIncomeData, setAnnualIncomeData] = useState([]);
     const [educationalQualificationData, setEducationalQualificationData] = useState([]);
     const [maritalStatusData, setMaritalStatusData] = useState([]);
     const [bloodGroupData, setBloodGroupData] = useState([]);
+    const [occupationData, setOccupationData] = useState([]);
+    const [image, setImage] = useState("");
+    const [imageLoaded, setImageLoaded] = useState(false);
+
 
 
     const changeFamilyDetails = (value, key) => {
@@ -87,6 +93,46 @@ const MemberPage = ({ memberDetails, closePage }) => {
         setMemData(temp);
     }
 
+
+
+    const getImage = () => {
+
+        return (
+            <Grid item xs={12} style={{ paddingRight: 20, textAlign: 'center' }} >
+                {
+                    !imageLoaded &&
+                    <CircularProgress />
+                }
+                <img
+                    style={imageLoaded ? {} : { display: 'none' }}
+                    // class="loading" 
+                    src={`${SERVICE_BASE_URL}/getImage?memId=` + memData.id}
+                    onLoad={() => { setImageLoaded(true) }}
+                    alt={'image'}
+                    width={'200px'}
+                />
+            </Grid>
+        );
+    }
+
+    const getImageInit = () => {
+        const config = {};
+        setIsLoading(true);
+        ajax
+            .get(`${SERVICE_BASE_URL}/getImage?memId=` + memData.id, { config })
+            .then((res) => {
+                console.log(res)
+                setImage(res.data)
+            })
+            .catch((e) => {
+                setIsLoading(false);
+                setisError(true);
+                seterrorMessage(e.response.data.message);
+                console.log(e)
+            }
+            );
+    }
+
     useEffect(() => {
         getDataForDropDown('getGender', setGenderData)
         getDataForDropDown('getRelationship', setReleationshipData)
@@ -94,6 +140,9 @@ const MemberPage = ({ memberDetails, closePage }) => {
         getDataForDropDown('getBloodGroup', setBloodGroupData)
         getDataForDropDown('getMaritalStatus', setMaritalStatusData)
         getDataForDropDown('getAnnualIncome', setAnnualIncomeData)
+        getDataForDropDown('getCommunity', setCommunityData)
+        getDataForDropDown('getOccupation', setOccupationData)
+        // getImageInit()
     }, [])
 
 
@@ -101,6 +150,10 @@ const MemberPage = ({ memberDetails, closePage }) => {
     return (
         <Fragment>
             <Grid style={{ marginTop: 70, paddingLeft: 20 }} container spacing={2}>
+                {
+                    memData.imageLocation !== "" &&
+                    getImage()
+                }
                 <Grid item xs={12} style={{ paddingRight: 20 }} >
                     <TextField style={{ width: '100%' }} value={memData.memberName + ''}
                         onChange={(e) => changeFamilyDetails(e.target.value, 'memberName')}
@@ -118,7 +171,7 @@ const MemberPage = ({ memberDetails, closePage }) => {
                 </Grid>
             </Grid>
 
-            <Grid style={{ marginTop: 10, paddingLeft: 20 }} container spacing={2}>
+            {/* <Grid style={{ marginTop: 10, paddingLeft: 20 }} container spacing={2}>
                 <Grid item xs={12} style={{ paddingRight: 20 }}>
                     <TextField style={{ width: '100%' }} value={memData.community + ''}
                         onChange={(e) => changeFamilyDetails(e.target.value, 'community')}
@@ -129,9 +182,42 @@ const MemberPage = ({ memberDetails, closePage }) => {
                         onChange={(e) => changeFamilyDetails(e.target.value, 'caste')}
                         id="standard-basic" label="caste" variant="outlined" />
                 </Grid>
-            </Grid>
+            </Grid> */}
 
             <Grid style={{ padding: 20 }} container spacing={2}>
+                <Grid item xs={12}>
+                    <Autocomplete
+                        disabled
+                        id="combo-box-demo"
+                        options={communityData.map((e) => {
+                            const temp = { ...e }
+                            temp.label = e.community
+                            return temp
+                        })}
+                        isOptionEqualToValue={useCallback((option, value) => option.community === value)} // added
+                        onChange={(event, newValue) => {
+                            onChangeLabel(newValue, 'communityDetail', 'community');
+                        }}
+                        value={memData.communityDetail === undefined ? null : (memData.communityDetail.community + '')}
+                        renderInput={(params) => <TextField disabled style={{ width: '100%' }} {...params} variant="outlined" label="Community" />}
+                    />
+                </Grid>
+                <Grid item xs={12}>
+                    <Autocomplete
+                        id="combo-box-demo"
+                        options={communityData.map((e) => {
+                            const temp = { ...e }
+                            temp.label = e.community+":"+e.caste
+                            return temp
+                        })}
+                        isOptionEqualToValue={useCallback((option, value) => option.caste === value)} // added
+                        onChange={(event, newValue) => {
+                            onChangeLabel(newValue, 'communityDetail', 'community');
+                        }}
+                        value={memData.communityDetail === undefined ? null : (memData.communityDetail.caste + '')}
+                        renderInput={(params) => <TextField style={{ width: '100%' }} {...params} variant="outlined" label="Caste" />}
+                    />
+                </Grid>
                 <Grid item xs={12}>
                     <Autocomplete
                         id="combo-box-demo"
@@ -140,6 +226,8 @@ const MemberPage = ({ memberDetails, closePage }) => {
                             temp.label = e.type
                             return temp
                         })}
+                        isOptionEqualToValue={useCallback((option, value) => option.type === value)} // added
+
                         onChange={(event, newValue) => {
                             onChangeLabel(newValue, 'genderDetails', 'gender');
                         }}
@@ -155,11 +243,12 @@ const MemberPage = ({ memberDetails, closePage }) => {
                             temp.label = e.type
                             return temp
                         })}
+                        isOptionEqualToValue={useCallback((option, value) => option.type === value)} // added
                         onChange={(event, newValue) => {
                             onChangeLabel(newValue, 'relationshipDetails', 'relationship');
                         }}
                         value={memData.relationshipDetails === undefined ? null : (memData.relationshipDetails.type + '')}
-                        renderInput={(params) => <TextField style={{ width: '100%' }} {...params} variant="outlined" label="Relationship" />}
+                        renderInput={(params) => <TextField style={{ width: '100%' }} {...params} variant="outlined" label="Relationship with head" />}
                     />
                 </Grid>
                 <Grid item xs={12}>
@@ -170,6 +259,7 @@ const MemberPage = ({ memberDetails, closePage }) => {
                             temp.label = e.type
                             return temp
                         })}
+                        isOptionEqualToValue={useCallback((option, value) => option.type === value)} // added
                         onChange={(event, newValue) => {
                             onChangeLabel(newValue, 'maritalStatusDetails', 'maritalStatus');
                         }}
@@ -189,6 +279,7 @@ const MemberPage = ({ memberDetails, closePage }) => {
                             temp.label = e.type
                             return temp
                         })}
+                        isOptionEqualToValue={useCallback((option, value) => option.type === value)} // added
                         onChange={(event, newValue) => {
                             onChangeLabel(newValue, 'bloodGroupDetails', 'bloodGroup');
                         }}
@@ -204,6 +295,7 @@ const MemberPage = ({ memberDetails, closePage }) => {
                             temp.label = e.type
                             return temp
                         })}
+                        isOptionEqualToValue={useCallback((option, value) => option.type === value)} // added
                         onChange={(event, newValue) => {
                             onChangeLabel(newValue, 'educationQualificationDetails', 'educationQualification');
                         }}
@@ -219,6 +311,7 @@ const MemberPage = ({ memberDetails, closePage }) => {
                             temp.label = e.type
                             return temp
                         })}
+                        isOptionEqualToValue={useCallback((option, value) => option.type === value)} // added
                         onChange={(event, newValue) => {
                             onChangeLabel(newValue, 'annualIncomeDetails', 'annualIncome');
                         }}
@@ -251,9 +344,20 @@ const MemberPage = ({ memberDetails, closePage }) => {
                         id="standard-basic" label="Email" variant="outlined" />
                 </Grid>
                 <Grid item xs={12}>
-                    <TextField style={{ width: '100%' }} value={memData.occupation + ''}
-                        onChange={(e) => changeFamilyDetails(e.target.value, 'occupation')}
-                        id="standard-basic" label="Occupation" variant="outlined" />
+                    <Autocomplete
+                        id="combo-box-demo"
+                        options={occupationData.map((e) => {
+                            const temp = { ...e }
+                            temp.label = e.type
+                            return temp
+                        })}
+                        isOptionEqualToValue={useCallback((option, value) => option.type === value)} // added
+                        onChange={(event, newValue) => {
+                            onChangeLabel(newValue, 'occupationDetail', 'occupation');
+                        }}
+                        value={memData.occupationDetail === undefined ? null : (memData.occupationDetail.type + '')}
+                        renderInput={(params) => <TextField style={{ width: '100%' }} {...params} variant="outlined" label="Occupation" />}
+                    />
                 </Grid>
             </Grid>
 
@@ -677,6 +781,21 @@ const MemberPage = ({ memberDetails, closePage }) => {
                         </ToggleButtonGroup>
                     </Grid>
                 </Grid>
+                {
+                    (memData.uterusCancer == "Y" || memData.uterusCancer == "N" ) &&
+                    <Grid item xs={12}>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <MobileDatePicker
+                            label="Uterus Cancer Scan Date"
+                            inputFormat="DD/MM/YYYY"
+                            value={memData.uterusCancerScan}
+                            onChange={(e) => changeFamilyDetails(e, 'uterusCancerScan')}
+                            renderInput={(params) => <TextField style={{ width: '100%' }} variant="outlined" {...params} />}
+                        />
+
+                    </LocalizationProvider>
+                </Grid>
+                }
                 <Grid container xs={12} style={{ paddingTop: 15 }}>
                     <Grid item xs={5} style={{ marginLeft: '15px' }}>
                         <Typography>
@@ -880,7 +999,7 @@ const MemberPage = ({ memberDetails, closePage }) => {
                     back
                 </Button>
             </Grid>
-            
+
             <Snackbar open={isError} autoHideDuration={4000} onClose={handleClose}>
                 <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
                     {errorMessage === '' ? 'Please Contact Admin' : errorMessage}
