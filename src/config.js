@@ -1,1 +1,1 @@
-export const SERVICE_BASE_URL='https://ce4e-223-178-80-213.ngrok.io/api';
+export const SERVICE_BASE_URL='http://localhost:8090/api';
