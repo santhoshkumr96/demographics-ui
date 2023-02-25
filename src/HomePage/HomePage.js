@@ -239,7 +239,7 @@ const HomePage = () => {
                     <Grid container spacing={2} style={{ marginTop: '80px', justifyContent: 'right', marginRight: '30px' }}>
                         <TablePagination
                             className="pagnation-div"
-                            rowsPerPageOptions={[10, 25, 100, 1000]}
+                            rowsPerPageOptions={[10, 25, 50]}
                             component="div"
                             count={popDataCount}
                             rowsPerPage={rowsPerPage}
@@ -302,13 +302,13 @@ const HomePage = () => {
                             <TableHead>
                                 <TableRow style={{ background: '#FC7300' }}>
                                     <TableCell style={{ color: 'white', minWidth: '100px' }} >S.No</TableCell>
-                                    <TableCell style={{ color: 'white', minWidth: '100px' }} >Id</TableCell>
+                                    {/* <TableCell style={{ color: 'white', minWidth: '100px' }} >Id</TableCell> */}
                                     <TableCell style={{ color: 'white', minWidth: '100px' }} >Family Id</TableCell>
                                     <TableCell style={{ color: 'white', minWidth: '100px' }} >Respondent Name</TableCell>
                                     <TableCell style={{ color: 'white', minWidth: '100px' }} >Mobile Number</TableCell>
                                     <TableCell style={{ color: 'white', minWidth: '100px' }} >No Family Members</TableCell>
                                     <TableCell style={{ color: 'white', minWidth: '100px' }} >Village Name</TableCell>
-                                    <TableCell style={{ color: 'white', minWidth: '100px' }} >Status</TableCell>
+                                    {/* <TableCell style={{ color: 'white', minWidth: '100px' }} >Status</TableCell> */}
                                     <TableCell style={{ color: 'white', minWidth: '100px' }} >Action</TableCell>
                                 </TableRow>
                             </TableHead>
@@ -319,13 +319,13 @@ const HomePage = () => {
                                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                     >
                                         <TableCell>{(page * rowsPerPage) + index + 1} </TableCell>
-                                        <TableCell>{row.id} </TableCell>
+                                        {/* <TableCell>{row.id} </TableCell> */}
                                         <TableCell>{row.familyId} </TableCell>
                                         <TableCell>{row.respondentName}</TableCell>
                                         <TableCell>{row.mobileNumber}</TableCell>
-                                        <TableCell>{getCountOfMembers(row)}</TableCell>
+                                        <TableCell>{row.memberCount}</TableCell>
                                         <TableCell>{row.demographicDetail.villageName}</TableCell>
-                                        <TableCell>{'in progress'}</TableCell>
+                                        {/* <TableCell>{'in progress'}</TableCell> */}
                                         <TableCell style={{ minWidth: 100 }}>
                                             <IconButton onClick={() => editFamily(row.id)} color="primary">
                                                 <EditIcon color="primary" />

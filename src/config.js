@@ -1,1 +1,1 @@
-export const SERVICE_BASE_URL='http://localhost:8090/api';
+export const SERVICE_BASE_URL='http://202.21.44.157:9080/demographics/api';

@@ -20,11 +20,11 @@ const AppNavigator = () => {
                 userContext.username !== '' &&
                 <AppBarPage/>
             } */}
-            <Routes>
-                <Route exact path='/' element={<PrivateRoute />}>
-                    <Route exact path='/' element={<AppBarPage />} />
+            <Routes >
+                <Route  path='/login' element={<Login />} />
+                <Route  path='/' element={<PrivateRoute />}>
+                    <Route  path='/' element={<AppBarPage />} />
                 </Route>
-                <Route exact path='/login' element={<Login />} />
             </Routes>
         </Fragment>
     );

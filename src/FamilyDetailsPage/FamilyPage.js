@@ -366,9 +366,12 @@ const FamilyPage = ({ famId }) => {
             "createdBy": loginContext.userId,
             "aadharNumber": "",
             "mobileNumber": "",
+            "patientId": "",
+            "tmhId" : "",
             "email": "",
             "physicallyChallenged": "",
             "physicallyChallengedDetails": "",
+            "handicapType": 0,
             "occupation": 0,
             "smartphone": "",
             "govtInsurance": "",
@@ -401,13 +404,15 @@ const FamilyPage = ({ famId }) => {
             "bloodGroup": 0,
             "educationQualification": 0,
             "annualIncome": 0,
+            "annualIncomeString":"",
             "isOsteoporosisScan": "",
             "osteoporosisScanOne": null,
             "osteoporosisScanTwo": null,
             "deceasedDate": null,
             "isDeceased": "",
             "imageLocation": "",
-            "uterusCancerScan": null
+            "uterusCancerScan": null,
+            "breastCancerScan": null
         }
         setMemberData(newMemberData);
     }
@@ -522,13 +527,13 @@ const FamilyPage = ({ famId }) => {
                                         id="standard-basic" label="Respondent Name" variant="outlined" />
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <TextField value={famData.familyId + ''}
+                                    <TextField disabled value={famData.familyId + ''}
                                         style={{ width: '100%' }}
                                         onChange={(e) => changeFamilyDetails(e.target.value, 'familyId')}
                                         id="standard-basic" label="Family Id" variant="outlined" />
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <TextField value={famData.memberDetail === undefined ? '' : (famData.memberDetail.length + '')}
+                                    <TextField disabled value={famData.memberDetail === undefined ? '' : (famData.memberDetail.length + '')}
                                         style={{ width: '100%' }}
                                         id="standard-basic" label="Number of members" variant="outlined" />
                                 </Grid>
@@ -711,12 +716,7 @@ const FamilyPage = ({ famId }) => {
                                 {
                                     famData.motorVechicles === "Y" &&
                                     <Fragment>
-                                        <Grid item xs={12}>
-                                            <TextField value={famData.oneWheeler + ''}
-                                                style={{ width: '100%' }}
-                                                onChange={(e) => changeFamilyDetails(e.target.value, 'oneWheeler')}
-                                                id="standard-basic" label="One Wheeler" variant="outlined" />
-                                        </Grid>
+        
                                         <Grid item xs={12}>
                                             <TextField value={famData.twoWheeler + ''}
                                                 style={{ width: '100%' }}
@@ -944,7 +944,7 @@ const FamilyPage = ({ famId }) => {
                         <Button
                             style={{ width: '100%' }}
                             variant="outlined"
-                            onClick={() => navigate(-2)}>
+                            onClick={() => navigate(-1)}>
                             back
                         </Button>
                     </Grid>
