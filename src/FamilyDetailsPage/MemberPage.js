@@ -9,6 +9,21 @@ import moment from 'moment'
 import LoginContext from '../LoginAuthProvider/LoginContext';
 import HideImageIcon from '@mui/icons-material/HideImage';
 
+const defaultSterData = [
+    {
+        "id": 1,
+        "type": "Copper T"
+    },
+    {
+        "id": 2,
+        "type": "Tablets"
+    },
+    {
+        "id": 3,
+        "type": "Others"
+    }
+]
+
 const MemberPage = ({ memberDetails, closePage }) => {
 
     //default page handlers
@@ -37,6 +52,7 @@ const MemberPage = ({ memberDetails, closePage }) => {
     const [handiCapData, setHandiCapData] = useState([]);
     const [image, setImage] = useState("");
     const [imageLoaded, setImageLoaded] = useState(false);
+    const [tempSterlizationData, setTempSterlizationData] = useState(defaultSterData);
 
 
 
@@ -94,6 +110,11 @@ const MemberPage = ({ memberDetails, closePage }) => {
         setMemData(temp);
     }
 
+    const onChangeLabelSterlization = (data, key) => {
+        const temp = { ...memData }
+        temp[key] = data.type;
+        setMemData(temp);
+    }
 
 
     const getImage = () => {
@@ -175,7 +196,7 @@ const MemberPage = ({ memberDetails, closePage }) => {
                 <Grid item xs={12} style={{ paddingRight: 20 }} >
                     <TextField style={{ width: '100%' }} value={memData.patientId + ''}
                         onChange={(e) => changeFamilyDetails(e.target.value, 'patientId')}
-                        id="standard-basic" label="Patient Id" variant="outlined" />
+                        id="standard-basic" label="Member Id" variant="outlined" />
                 </Grid>
                 <Grid item xs={12} style={{ paddingRight: 20 }} >
                     <TextField style={{ width: '100%' }} value={memData.tmhId + ''}
@@ -378,6 +399,100 @@ const MemberPage = ({ memberDetails, closePage }) => {
                     />
                 </Grid>
             </Grid>
+
+            {
+                memData.tmpSterlization !== "Y" &&
+                <Grid style={{ padding: 20 }} container spacing={2}>
+                    <Grid container xs={12} style={{ paddingTop: 15 }}>
+                        <Grid item xs={5} style={{ marginLeft: '15px' }}>
+                            <Typography>
+                                Is sterlized permanently ?
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <ToggleButtonGroup
+                                color="primary"
+                                value={(memData.permanentSterlization === null || memData.permanentSterlization === "") ? 'N/A' : memData.permanentSterlization}
+                                exclusive
+                                onChange={(e) => changeFamilyDetails(e.target.value, 'permanentSterlization')}
+                                aria-label="Platform"
+                            >
+                                <ToggleButton value="N/A">N/A</ToggleButton>
+                                <ToggleButton value="Y">Y</ToggleButton>
+                                <ToggleButton value="N">N</ToggleButton>
+                            </ToggleButtonGroup>
+                        </Grid>
+                    </Grid>
+                    {
+                        memData.permanentSterlization === "Y" &&
+                        <Fragment>
+                            <Grid item xs={12} style={{ paddingTop: 15 }}>
+                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                    <MobileDatePicker
+                                        label="Sterlized Date"
+                                        inputFormat="DD/MM/YYYY"
+                                        value={memData.permanentSterlizationDate}
+                                        onChange={(e) => changeFamilyDetails(e, 'permanentSterlizationDate')}
+                                        renderInput={(params) => <TextField style={{ width: '100%' }} variant="outlined" {...params} />}
+                                    />
+
+                                </LocalizationProvider>
+                            </Grid>
+                        </Fragment>
+                    }
+                </Grid>
+            }
+
+
+
+            {
+                memData.permanentSterlization !== "Y" &&
+                <Grid style={{ padding: 20 }} container spacing={2}>
+                    <Grid container xs={12} style={{ paddingTop: 15 }}>
+                        <Grid item xs={5} style={{ marginLeft: '15px' }}>
+                            <Typography>
+                                Is sterlized temporarily ?
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <ToggleButtonGroup
+                                color="primary"
+                                value={(memData.tmpSterlization === null || memData.tmpSterlization === "") ? 'N/A' : memData.tmpSterlization}
+                                exclusive
+                                onChange={(e) => changeFamilyDetails(e.target.value, 'tmpSterlization')}
+                                aria-label="Platform"
+                            >
+                                <ToggleButton value="N/A">N/A</ToggleButton>
+                                <ToggleButton value="Y">Y</ToggleButton>
+                                <ToggleButton value="N">N</ToggleButton>
+                            </ToggleButtonGroup>
+                        </Grid>
+                    </Grid>
+                    {
+                        memData.tmpSterlization === "Y" &&
+                        <Fragment>
+                            <Grid item xs={12}>
+                                <Autocomplete
+                                    id="combo-box-demo"
+                                    options={tempSterlizationData.map((e) => {
+                                        const temp = { ...e }
+                                        temp.label = e.type
+                                        return temp
+                                    })}
+                                    // isOptionEqualToValue={useCallback((option, value) => option.type === value)} // added
+                                    onChange={(event, newValue) => {
+                                        // onChangeLabel(newValue, 'occupationDetail', 'occupation');
+                                        onChangeLabelSterlization(newValue, 'tmpSterlizationType');
+                                    }}
+                                    value={memData.tmpSterlizationType === undefined || memData.tmpSterlizationType === "" ? null : memData.tmpSterlizationType}
+                                    renderInput={(params) => <TextField style={{ width: '100%' }} {...params} variant="outlined" label="Temporary Sterilization Type" />}
+                                />
+                            </Grid>
+                        </Fragment>
+                    }
+                </Grid>
+            }
+
 
             <Grid style={{ padding: 20 }} container spacing={2}>
                 <Grid container xs={12} style={{ paddingTop: 15 }}>
@@ -677,6 +792,54 @@ const MemberPage = ({ memberDetails, closePage }) => {
                         </ToggleButtonGroup>
                     </Grid>
                 </Grid>
+                <Grid item xs={12}>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <MobileDatePicker
+                            label="Diabetes Enrollement Date"
+                            inputFormat="DD/MM/YYYY"
+                            value={memData.diabeticEnrolmentDate}
+                            onChange={(e) => changeFamilyDetails(e, 'diabeticEnrolmentDate')}
+                            renderInput={(params) => <TextField style={{ width: '100%' }} variant="outlined" {...params} />}
+                        />
+
+                    </LocalizationProvider>
+                </Grid>
+                <Grid container xs={12}>
+                    <Grid item xs={5} style={{ marginLeft: '15px', paddingTop: 15 }}>
+                        <Typography>
+                            Diabetes Enrollement Status
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={6} style={{ paddingTop: 15 }}>
+                        <ToggleButtonGroup
+                            color="primary"
+                            value={(memData.diabeticEnrollmentStatus === null || memData.diabeticEnrollmentStatus === "") ? 'N/A' : memData.diabeticEnrollmentStatus}
+                            exclusive
+                            onChange={(e) => changeFamilyDetails(e.target.value, 'diabeticEnrollmentStatus')}
+                            aria-label="Platform"
+                        >
+                            <ToggleButton value="N/A">N/A</ToggleButton>
+                            <ToggleButton value="Y">Active</ToggleButton>
+                            <ToggleButton value="N">Inactive</ToggleButton>
+                        </ToggleButtonGroup>
+                    </Grid>
+                </Grid>
+                {
+                    memData.diabeticEnrollmentStatus === "Y" &&
+                    <Grid item xs={12}>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <MobileDatePicker
+                                label="Diabetes Enrollement End Date"
+                                inputFormat="DD/MM/YYYY"
+                                value={memData.diabeticEnrollmentEndDate}
+                                onChange={(e) => changeFamilyDetails(e, 'diabeticEnrollmentEndDate')}
+                                renderInput={(params) => <TextField style={{ width: '100%' }} variant="outlined" {...params} />}
+                            />
+
+                        </LocalizationProvider>
+                    </Grid>
+
+                }
                 <Grid container xs={12} style={{ paddingTop: 15 }}>
                     <Grid item xs={5} style={{ marginLeft: '15px' }}>
                         <Typography>
