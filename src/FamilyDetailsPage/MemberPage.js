@@ -792,18 +792,42 @@ const MemberPage = ({ memberDetails, closePage }) => {
                         </ToggleButtonGroup>
                     </Grid>
                 </Grid>
-                <Grid item xs={12}>
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <MobileDatePicker
-                            label="Diabetes Enrollement Date"
-                            inputFormat="DD/MM/YYYY"
-                            value={memData.diabeticEnrolmentDate}
-                            onChange={(e) => changeFamilyDetails(e, 'diabeticEnrolmentDate')}
-                            renderInput={(params) => <TextField style={{ width: '100%' }} variant="outlined" {...params} />}
-                        />
 
-                    </LocalizationProvider>
+                <Grid container xs={12}>
+                    <Grid item xs={5} style={{ marginLeft: '15px', paddingTop: 15 }}>
+                        <Typography>
+                            Diabetes Package
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={6} style={{ paddingTop: 15 }}>
+                        <ToggleButtonGroup
+                            color="primary"
+                            value={(memData.diabeticPackage === null || memData.diabeticPackage === "") ? 'N/A' : memData.diabeticPackage}
+                            exclusive
+                            onChange={(e) => changeFamilyDetails(e.target.value, 'diabeticPackage')}
+                            aria-label="Platform"
+                        >
+                            <ToggleButton value="N/A">N/A</ToggleButton>
+                            <ToggleButton value="Y">Y</ToggleButton>
+                            <ToggleButton value="N">N</ToggleButton>
+                        </ToggleButtonGroup>
+                    </Grid>
                 </Grid>
+                {
+                    memData.diabeticPackage === "Y" &&
+                    <Grid item xs={12}>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <MobileDatePicker
+                                label="Diabetes Package Enrollement Date"
+                                inputFormat="DD/MM/YYYY"
+                                value={memData.diabeticEnrolmentDate}
+                                onChange={(e) => changeFamilyDetails(e, 'diabeticEnrolmentDate')}
+                                renderInput={(params) => <TextField style={{ width: '100%' }} variant="outlined" {...params} />}
+                            />
+
+                        </LocalizationProvider>
+                    </Grid>
+                }
                 <Grid container xs={12}>
                     <Grid item xs={5} style={{ marginLeft: '15px', paddingTop: 15 }}>
                         <Typography>
@@ -825,11 +849,11 @@ const MemberPage = ({ memberDetails, closePage }) => {
                     </Grid>
                 </Grid>
                 {
-                    memData.diabeticEnrollmentStatus === "Y" &&
+                    memData.diabeticEnrollmentStatus === "N" &&
                     <Grid item xs={12}>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <MobileDatePicker
-                                label="Diabetes Enrollement End Date"
+                                label="Diabetes Package Enrollement End Date"
                                 inputFormat="DD/MM/YYYY"
                                 value={memData.diabeticEnrollmentEndDate}
                                 onChange={(e) => changeFamilyDetails(e, 'diabeticEnrollmentEndDate')}
