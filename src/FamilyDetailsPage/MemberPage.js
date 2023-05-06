@@ -1148,7 +1148,7 @@ const MemberPage = ({ memberDetails, closePage }) => {
                             color="primary"
                             value={(memData.jointPain === null || memData.jointPain === "") ? 'N/A' : memData.jointPain}
                             exclusive
-                            onChange={(e) => changeFamilyDetails(e.target.value, 'bp')}
+                            onChange={(e) => changeFamilyDetails(e.target.value, 'jointPain')}
                             aria-label="Platform"
                         >
                             <ToggleButton value="N/A">N/A</ToggleButton>

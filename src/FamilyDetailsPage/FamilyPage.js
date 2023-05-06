@@ -284,9 +284,9 @@ const FamilyPage = ({ famId }) => {
             const temp = { ...familyArea };
             if (areaLabels.panchayat.length === 1) {
                 temp.panchayat = areaLabels.panchayat[0];
-                console.log('the panchayat', areaLabels)
+                // console.log('the panchayat', areaLabels)
             } else {
-                console.log('the panchayat', areaLabels)
+                // console.log('the panchayat', areaLabels)
                 temp.panchayat = undefined;
             }
             if (areaLabels.areaCode.length === 1) {
@@ -329,10 +329,13 @@ const FamilyPage = ({ famId }) => {
 
         genAreaLables(streetData);
 
+        console.log(streetData)
+
         if (streetData.length === 1) {
             setFamilyArea(streetData[0])
             const temp = { ...famData }
             temp.areaDetails = streetData[0].id;
+            console.log(streetData[0].id)
             setFamData(temp);
         }
     }
