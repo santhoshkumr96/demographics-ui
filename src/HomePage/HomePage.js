@@ -329,6 +329,14 @@ const HomePage = () => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
+                                {!filterDataLoading && data.length === 0 &&
+                                    <Container>
+                                        <div>
+                                            no data
+                                        </div>
+                                    </Container>
+
+                                }
                                 {!filterDataLoading && data.map((row, index) => (
                                     <TableRow
                                         key={row.name}
