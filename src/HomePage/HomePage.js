@@ -80,6 +80,7 @@ const HomePage = () => {
     const [familyId, setFamilyId] = useState('');
     const [respondentName, setRespondentName] = useState('');
     const [mobileNumber, setMobileNumber] = useState('');
+    const [memberName, setMemberName] = useState('');
     const [villageName, setVillageName] = useState('');
     const [filterDataLoading, setFilterDataLoading] = useState(false);
     const [famId, setFamId] = useState(0);
@@ -131,8 +132,13 @@ const HomePage = () => {
         temp.respondentName = respondentName;
         temp.mobileNumber = mobileNumber;
         temp.villageName = villageName;
+        temp.memberName = memberName;
+        let serviceUrl = 'getFamilyDetails';
+        if (memberName !== ''){
+            serviceUrl = 'getFamilyDetailsNew';
+        }
         ajax
-            .post(`${SERVICE_BASE_URL}/getFamilyDetails`, temp, { config })
+            .post(`${SERVICE_BASE_URL}/${serviceUrl}`, temp, { config })
             .then((res) => {
                 // console.log(res)
                 setData(res.data.content)
@@ -173,6 +179,7 @@ const HomePage = () => {
         setRespondentName('')
         setMobileNumber('')
         setVillageName('')
+        setMemberName('')
         setIsLoading(true);
         setFilterDataLoading(false);
         getFamilyDetails();
@@ -183,7 +190,7 @@ const HomePage = () => {
         setFilterDataLoading(true)
         getFamilyDetails();
         // console.log('calling here')
-    }, [paginationData, familyId, respondentName, mobileNumber, villageName])
+    }, [paginationData, familyId, respondentName, mobileNumber, villageName, memberName])
 
 
     const deleteFamily = (familyid, id) => {
@@ -259,25 +266,34 @@ const HomePage = () => {
                         isSearchEnabled &&
                         <Grid container spacing={2} style={{marginLeft:'20px' , justifyContent: 'right', marginRight: '30px', marginTop: '10px', marginBottom: '10px' }}>
                             <Grid xs={12} md={2}>
-                                <TextField style={{ width:'100%', padding:'5px' }} id="outlined-basic" size="small" label="Family Id" variant="outlined"
+                                <TextField style={{ width:'100%', padding:'5px' , paddingRight:'2px'}} id="outlined-basic" size="small" label="Family Id" variant="outlined"
                                     value={familyId}
                                     onChange={(e) => setFamilyId(e.target.value)}
                                 />
                             </Grid>
                             <Grid  xs={12} md={2}>
-                                <TextField style={{ width:'100%', padding:'5px' }} id="outlined-basic" size="small" label="Respondent Name" variant="outlined"
+                                <TextField style={{ width:'100%', padding:'5px' , paddingRight:'2px'}} id="outlined-basic" size="small" label="Respondent Name" variant="outlined"
                                     value={respondentName}
                                     onChange={(e) => setRespondentName(e.target.value)}
                                 />
                             </Grid>
                             <Grid  xs={12} md={2}>
-                                <TextField style={{ width:'100%', padding:'5px' }} id="outlined-basic" size="small" label="Mobile Number" variant="outlined"
+                                <TextField style={{ width:'100%', padding:'5px' , paddingRight:'2px'}} id="outlined-basic" size="small" label="Mobile Number" variant="outlined"
                                     value={mobileNumber}
                                     onChange={(e) => setMobileNumber(e.target.value)}
                                 />
                             </Grid>
+                            {
+                                villageName !== '' && 
+                                <Grid  xs={12} md={2}>
+                                    <TextField style={{ width:'100%', padding:'5px' , paddingRight:'2px'}} id="outlined-basic" size="small" label="Member Name" variant="outlined"
+                                        value={memberName}
+                                        onChange={(e) => setMemberName(e.target.value)}
+                                    />
+                                </Grid>
+                            }
                             <Grid  xs={12} md={2}>
-                                <TextField style={{ width:'100%', padding:'5px'}} id="outlined-basic" size="small" label="Village Name" variant="outlined"
+                                <TextField style={{ width:'100%', padding:'5px', paddingRight:'2px'}} id="outlined-basic" size="small" label="Village Name" variant="outlined"
                                     value={villageName}
                                     onChange={(e) => setVillageName(e.target.value)}
                                 />
