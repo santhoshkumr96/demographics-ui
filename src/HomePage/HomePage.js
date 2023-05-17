@@ -185,12 +185,22 @@ const HomePage = () => {
         getFamilyDetails();
     }
 
-    useEffect(() => {
-        // setIsLoading(true);
+    const search = () => {
         setFilterDataLoading(true)
         getFamilyDetails();
-        // console.log('calling here')
-    }, [paginationData, familyId, respondentName, mobileNumber, villageName, memberName])
+    }
+
+    useEffect(()=>{
+        setFilterDataLoading(true)
+        getFamilyDetails();
+    },[])
+
+    // useEffect(() => {
+    //     // setIsLoading(true);
+    //     setFilterDataLoading(true)
+    //     getFamilyDetails();
+    //     // console.log('calling here')
+    // }, [paginationData, familyId, respondentName, mobileNumber, villageName, memberName])
 
 
     const deleteFamily = (familyid, id) => {
@@ -284,7 +294,7 @@ const HomePage = () => {
                                 />
                             </Grid>
                             {
-                                villageName !== '' && 
+                                villageName !== '' &&
                                 <Grid  xs={12} md={2}>
                                     <TextField style={{ width:'100%', padding:'5px' , paddingRight:'2px'}} id="outlined-basic" size="small" label="Member Name" variant="outlined"
                                         value={memberName}
@@ -298,14 +308,21 @@ const HomePage = () => {
                                     onChange={(e) => setVillageName(e.target.value)}
                                 />
                             </Grid>
-                            <Grid  xs={12} md={2}  style={{marginLeft:'20px'}}>
-                            <Button
-                            style={{ width:'100%'}}
-                                variant="contained"
-                                onClick={() => clearSearch()}
-                            >
-                                Clear
-                            </Button>
+                            <Grid   style={{marginLeft:'20px'}}>
+                                        <Button
+                                        // style={{ width:'100%'}}
+                                            variant="contained"
+                                            onClick={() => clearSearch()}
+                                        >
+                                            search
+                                        </Button>
+                                        <Button
+                                        style={{ marginLeft:'10px'}}
+                                            variant="outlined"
+                                            onClick={() => clearSearch()}
+                                        >
+                                            Clear
+                                        </Button>
                             </Grid>
 
                         </Grid>
