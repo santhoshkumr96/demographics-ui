@@ -111,6 +111,8 @@ const HomePage = () => {
         let temp = paginationData;
         paginationData.pageNumber = newPage;
         setPaginationData({ ...temp });
+        // setFilterDataLoading(true)
+        getFamilyDetails();
         // getData();
     };
 
@@ -121,11 +123,13 @@ const HomePage = () => {
         paginationData.pageNumber = 0;
         paginationData.numberOfRows = (+event.target.value);
         setPaginationData({ ...temp });
+        getFamilyDetails();
         // getData();
     };
 
 
     const getFamilyDetails = () => {
+        setFilterDataLoading(true)
         const config = {};
         const temp = { ...paginationData }
         temp.familyId = familyId;
