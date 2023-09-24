@@ -190,7 +190,7 @@ const HomePage = () => {
     }
 
     const search = () => {
-        setFilterDataLoading(true)
+        // setFilterDataLoading(true)
         getFamilyDetails();
     }
 
@@ -316,7 +316,7 @@ const HomePage = () => {
                                         <Button
                                         // style={{ width:'100%'}}
                                             variant="contained"
-                                            onClick={() => clearSearch()}
+                                            onClick={() => search()}
                                         >
                                             search
                                         </Button>
