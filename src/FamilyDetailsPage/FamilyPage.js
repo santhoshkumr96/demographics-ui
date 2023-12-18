@@ -383,6 +383,8 @@ const FamilyPage = ({ famId }) => {
             "diabeticEnrollmentEndDate" : null,
             "diabeticPackage" : "",
             "handicapType": 0,
+            "height": 0,
+            "weight": 0,
             "occupation": 0,
             "smartphone": "",
             "govtInsurance": "",

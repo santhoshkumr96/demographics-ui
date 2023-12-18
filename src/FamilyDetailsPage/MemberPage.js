@@ -342,6 +342,16 @@ const MemberPage = ({ memberDetails, closePage }) => {
                         onChange={(e) => changeFamilyDetails(e.target.value, 'annualIncomeString')}
                         id="standard-basic" label="Annual Income" variant="outlined" />
                 </Grid>
+                <Grid item xs={12}  >
+                    <TextField type='number' style={{ width: '100%' }} value={memData.height + ''}
+                        onChange={(e) => changeFamilyDetails(e.target.value, 'height')}
+                        id="standard-basic" label="Height in cm" variant="outlined" />
+                </Grid>
+                <Grid item xs={12}  >
+                    <TextField type='number' style={{ width: '100%' }} value={memData.weight + ''}
+                        onChange={(e) => changeFamilyDetails(e.target.value, 'weight')}
+                        id="standard-basic" label="Weight in kg" variant="outlined" />
+                </Grid>
                 {/* <Grid item xs={12}>
                     <Autocomplete
                         id="combo-box-demo"
